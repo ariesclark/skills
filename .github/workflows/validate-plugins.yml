@@ -9,23 +9,18 @@ on:
 permissions:
   contents: read
 
-# Force ast-grep/action (which still targets Node 20) onto the Node.js 24 runtime
-# ahead of the 2026-06-16 forced switch, so the deprecation warning clears.
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-
 jobs:
   lint-skills:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
 
-      # Official ast-grep action: installs ast-grep and runs `ast-grep scan`
-      # against sgconfig.yml. Our rules in .ast-grep/rules cap SKILL.md
-      # frontmatter field lengths (description ≤1024, when_to_use ≤512) so the
-      # combined text stays under Claude Code's 1,536-char listing cap. Pinned
-      # to a commit SHA; bump deliberately.
-      - uses: ast-grep/action@6701c56c6825b7aefc56b019ccef89dbcfbee37d
-        with:
-          version: 0.43.0
-          config: sgconfig.yml
+      # Lint SKILL.md frontmatter by running ast-grep ourselves rather than
+      # through a third-party action: install the (native) CLI and run the rules
+      # in .ast-grep/rules via sgconfig.yml. They cap the description (≤1024) and
+      # when_to_use (≤512) lengths so the combined text stays under Claude Code's
+      # 1,536-char listing cap. `ast-grep scan` exits non-zero on violations.
+      - name: Install ast-grep
+        run: npm install -g @ast-grep/cli@0.43.0
+      - name: Lint SKILL.md frontmatter
+        run: ast-grep scan
