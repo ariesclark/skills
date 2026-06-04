@@ -84,6 +84,3 @@ end
 
 ## Before you finish
 Run `mix test`, `mix format --check-formatted`, and `mix compile --warnings-as-errors`. These belong in CI; run them locally before pushing.
-
----
-*Adapted and expanded from [elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide) (MIT, © 2026 Joseph Morgan).*

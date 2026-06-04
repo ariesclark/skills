@@ -78,6 +78,3 @@ Don't write a generic catch-all `else` over every step — match the steps whose
 
 ## Before you finish
 Run `mix format`, `mix compile --warnings-as-errors`, and your migrations against a scratch DB (`mix ecto.migrate` / `ecto.rollback`) so reversibility is real, not assumed.
-
----
-*Adapted and expanded from [elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide) (MIT, © 2026 Joseph Morgan).*

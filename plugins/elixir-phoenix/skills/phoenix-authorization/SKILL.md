@@ -62,6 +62,3 @@ Keep policy functions total and assertive — match the allowed cases, let the f
 - Authorizing in a plug by route but not re-checking the specific record the action loads.
 - Returning `403` where existence itself is sensitive — prefer `404`.
 - Role checks sprinkled in templates/serializers instead of gating the data access.
-
----
-*Adapted and expanded from [elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide) (MIT, © 2026 Joseph Morgan).*

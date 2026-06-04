@@ -72,6 +72,3 @@ end
 ## Sensitive logging
 - `config :phoenix, :filter_parameters, ["password", "token", "secret"]`.
 - Scrub `Authorization`/`Cookie` headers before they reach logs or your error reporter's request context.
-
----
-*Adapted and expanded from [elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide) (MIT, © 2026 Joseph Morgan).*

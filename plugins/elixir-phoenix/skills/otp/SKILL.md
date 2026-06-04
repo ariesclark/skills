@@ -82,6 +82,3 @@ end)
 - A GenServer that's really just a lock around shared data → consider ETS or passing state explicitly.
 - Catching exits to "keep the server up" → you're hiding the bug and keeping corrupt state.
 - Unsupervised `Task.start/1` for important work → crashes vanish.
-
----
-*Adapted and expanded from [elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide) (MIT, © 2026 Joseph Morgan).*

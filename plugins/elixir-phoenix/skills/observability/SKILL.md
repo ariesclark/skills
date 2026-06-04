@@ -59,6 +59,3 @@ Use `Telemetry.Metrics` + a reporter (Prometheus, or `Phoenix.LiveDashboard` for
 
 ## Error reporting vs logs
 Errors and logs are different pipelines. Crashes/exceptions should reach an error reporter (Sentry et al.) **with a stacktrace**; structured logs are for expected, queryable events. If something interesting is also a bug, raise it — don't just log a string.
-
----
-*Adapted and expanded from [elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide) (MIT, © 2026 Joseph Morgan).*

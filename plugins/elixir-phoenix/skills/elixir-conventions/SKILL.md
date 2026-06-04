@@ -6,7 +6,7 @@ description: >-
 
 # Elixir conventions
 
-Adapted from Chris Keathley's **[Good and Bad Elixir](https://keathley.io/blog/good-and-bad-elixir.html)**: recurring patterns that lead to worse code, and the better alternatives.
+Recurring patterns that lead to worse code, and the better alternatives.
 
 ## `Map.get/2` and `Keyword.get/2` vs. `Access`
 
@@ -286,7 +286,3 @@ These belong in CI, but run them locally before declaring code done — don't ju
 - `mix test` — and add a failing test first for any bug you fix.
 
 If a check isn't configured, note it rather than skipping silently.
-
----
-
-Source: Chris Keathley, [Good and Bad Elixir](https://keathley.io/blog/good-and-bad-elixir.html).

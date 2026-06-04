@@ -73,6 +73,3 @@ end
 - A worker that catches every error and returns `{:error, inspect(e)}` → erases the stacktrace and retries bugs.
 - Passing whole Ecto structs in args (stale data, bloated payloads).
 - No `max_attempts` ceiling / no backoff → retry storms.
-
----
-*Adapted and expanded from [elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide) (MIT, © 2026 Joseph Morgan).*

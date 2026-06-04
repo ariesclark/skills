@@ -66,6 +66,3 @@ Use `with` for the happy path; don't add `else` clauses that rewrap errors (`eli
 - Clamp page size server-side: `limit = attrs |> get_int("limit", 25) |> min(100)`. Return `data` + `meta` (cursor or page/total).
 - Version via path (`/api/v1`) or an `Accept` header; pick one and route pipelines accordingly.
 - Bearer tokens: a `plug` reads `authorization`, verifies, assigns the current identity, and halts with `{:error, :unauthorized}` on failure — compare tokens with `Plug.Crypto.secure_compare/2` (see `phoenix-security`).
-
----
-*Adapted and expanded from [elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide) (MIT, © 2026 Joseph Morgan).*

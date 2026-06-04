@@ -60,6 +60,3 @@ Run migrations as a discrete deploy step **before** the new code starts taking t
 
 ## Before shipping
 `mix compile --warnings-as-errors`, `mix test`, build the release, and dry-run the migration path (`migrate` then `rollback`) against a staging DB.
-
----
-*Adapted and expanded from [elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide) (MIT, © 2026 Joseph Morgan).*

@@ -76,10 +76,10 @@ claude plugin validate ./plugins/elixir-phoenix --strict
 claude plugin validate ./plugins/fly --strict
 ```
 
-## Credits
+## References
 
-- The Elixir & Phoenix skills are adapted and expanded from **[elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide)** by Joseph Morgan (MIT).
-- `elixir-conventions` is based on Chris Keathley's **[Good and Bad Elixir](https://keathley.io/blog/good-and-bad-elixir.html)**.
+- [elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide) — Joseph Morgan (MIT); foundation for the Elixir & Phoenix skills.
+- Chris Keathley, [Good and Bad Elixir](https://keathley.io/blog/good-and-bad-elixir.html) ([source](https://github.com/keathley/keathley.github.io/blob/master/_posts/2021/2021-05-14-good-and-bad-elixir.md)); foundation for `elixir-conventions`.
 
 ## License
 
