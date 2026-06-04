@@ -14,9 +14,8 @@ claude plugin validate ./plugins/<name> --strict  # a plugin + its skills' front
 ast-grep scan                                      # SKILL.md frontmatter lint rules
 ```
 
-CI runs all of these on PRs (`.github/workflows/validate-plugins.yml`):
-`claude plugin validate` via Anthropic's reusable action, and `ast-grep scan` via
-the official ast-grep action.
+CI (`.github/workflows/lint.yml`) runs `ast-grep scan` on every PR and push to
+`main`; `claude plugin validate` stays a local pre-commit step.
 
 ## Skill frontmatter rules
 

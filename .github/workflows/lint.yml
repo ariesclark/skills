@@ -1,4 +1,4 @@
-name: Validate Plugins
+name: lint
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  lint-skills:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
