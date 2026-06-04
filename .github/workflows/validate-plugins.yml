@@ -7,6 +7,7 @@ on:
       - 'plugins/**'
       - '.ast-grep/**'
       - 'sgconfig.yml'
+      - '.github/workflows/validate-plugins.yml'
   push:
     branches: [main]
     paths:
@@ -14,6 +15,7 @@ on:
       - 'plugins/**'
       - '.ast-grep/**'
       - 'sgconfig.yml'
+      - '.github/workflows/validate-plugins.yml'
   workflow_dispatch:
 
 permissions:
