@@ -1,6 +1,7 @@
 ---
 name: ecto
-description: Ecto patterns for Postgres-backed Elixir/Phoenix apps — schemas, changesets (per-operation, composition, validations), associations, cast_assoc/cast_embed, Ecto.Multi, transactions, migrations, and query performance (N+1, indexes). Use when writing or reviewing schemas, changesets, migrations, or Repo/query code. Triggers: Ecto, changeset, cast_assoc, Repo, migration, Ecto.Multi, preload, N+1.
+description: >-
+  Ecto patterns for Postgres-backed Elixir/Phoenix apps — schemas, changesets (per-operation, composition, validations), associations, cast_assoc/cast_embed, Ecto.Multi, transactions, migrations, and query performance (N+1, indexes). Use when writing or reviewing schemas, changesets, migrations, or Repo/query code. Triggers: Ecto, changeset, cast_assoc, Repo, migration, Ecto.Multi, preload, N+1.
 ---
 
 # Ecto patterns

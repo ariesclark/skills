@@ -1,6 +1,7 @@
 ---
 name: phoenix-security
-description: Security essentials for Elixir/Phoenix apps — atom exhaustion, SQL injection, XSS, open redirects, password hashing, constant-time token comparison, sensitive-data logging, CSRF, and dependency auditing. Use when writing or reviewing auth, input handling, queries, redirects, token/password code, or doing a security pass. Triggers: security, atom exhaustion, SQL injection, XSS, open redirect, password hashing, secure_compare, timing attack.
+description: >-
+  Security essentials for Elixir/Phoenix apps — atom exhaustion, SQL injection, XSS, open redirects, password hashing, constant-time token comparison, sensitive-data logging, CSRF, and dependency auditing. Use when writing or reviewing auth, input handling, queries, redirects, token/password code, or doing a security pass. Triggers: security, atom exhaustion, SQL injection, XSS, open redirect, password hashing, secure_compare, timing attack.
 ---
 
 # Phoenix / Elixir security essentials

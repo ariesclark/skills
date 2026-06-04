@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "fly",
+  "displayName": "Fly.io Ops",
+  "version": "0.1.0",
+  "description": "Operate Fly.io infrastructure — query the org's hosted Prometheus and VictoriaLogs, run commands on live app machines via SSH, and connect to the production database.",
+  "author": {
+    "name": "Aries Clark",
+    "email": "me@ariesclark.com",
+    "url": "https://github.com/ariesclark"
+  },
+  "homepage": "https://github.com/ariesclark/skills",
+  "repository": "https://github.com/ariesclark/skills",
+  "license": "MIT",
+  "keywords": ["fly", "fly.io", "prometheus", "victorialogs", "ops", "infrastructure", "observability"]
+}

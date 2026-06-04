@@ -1,6 +1,7 @@
 ---
 name: observability
-description: Observability for Elixir/Phoenix — structured (JSON) logging, :telemetry events/handlers, OpenTelemetry tracing, error reporting (e.g. Sentry), and metrics/LiveDashboard. Use when adding logging, instrumentation, traces, or metrics, or reviewing how an app reports what it's doing in production. Triggers: logging, structured logs, logger_json, telemetry, OpenTelemetry, traces, metrics, LiveDashboard, Sentry.
+description: >-
+  Observability for Elixir/Phoenix — structured (JSON) logging, :telemetry events/handlers, OpenTelemetry tracing, error reporting (e.g. Sentry), and metrics/LiveDashboard. Use when adding logging, instrumentation, traces, or metrics, or reviewing how an app reports what it's doing in production. Triggers: logging, structured logs, logger_json, telemetry, OpenTelemetry, traces, metrics, LiveDashboard, Sentry.
 ---
 
 # Observability

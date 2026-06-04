@@ -1,6 +1,7 @@
 {
-  "name": "ariesclark",
-  "displayName": "Aries Clark's Elixir & Phoenix Skills",
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "elixir-phoenix",
+  "displayName": "Elixir & Phoenix Skills",
   "version": "0.1.0",
   "description": "Idiomatic Elixir & Phoenix skills — conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing.",
   "author": {

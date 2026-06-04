@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "prior-art",
+  "displayName": "Prior Art",
+  "version": "0.1.0",
+  "description": "Search for and mirror existing prior art — official/upstream repos, reusable actions, in-repo patterns — before hand-rolling CI, tooling, infra, or reimplementing functionality.",
+  "author": {
+    "name": "Aries Clark",
+    "email": "me@ariesclark.com",
+    "url": "https://github.com/ariesclark"
+  },
+  "homepage": "https://github.com/ariesclark/skills",
+  "repository": "https://github.com/ariesclark/skills",
+  "license": "MIT",
+  "keywords": ["prior-art", "ci", "tooling", "infrastructure", "scaffolding", "reuse", "best-practices"]
+}

@@ -1,19 +1,24 @@
 # ariesclark — Claude Code skills
 
-A Claude Code plugin of idiomatic **Elixir & Phoenix** skills (plus a Fly.io ops skill), packaged as a plugin and a single-plugin marketplace.
+A Claude Code **marketplace** catalog of skills, organized as domain plugins you
+install independently. Currently: idiomatic **Elixir & Phoenix** skills and a
+**Fly.io** ops skill.
 
 ## Install
 
+Add the marketplace once, then install the plugins you want:
+
 ```text
 /plugin marketplace add ariesclark/skills
-/plugin install ariesclark@ariesclark
+/plugin install elixir-phoenix@ariesclark
+/plugin install fly@ariesclark
 ```
 
-Or, for local development, drop this repo under a skills directory (`~/.claude/skills/` or a project's `.claude/skills/`) — the `.claude-plugin/plugin.json` makes it load in place as `ariesclark@skills-dir`.
+## Plugins
 
-## Skills
+### `elixir-phoenix`
+Idiomatic Elixir & Phoenix backend skills.
 
-### Elixir & Phoenix
 | Skill | What it covers |
 | --- | --- |
 | `elixir-conventions` | The "Good and Bad Elixir" rules — error tuples vs. raising, `with`/`case`, assertive matching, pipelines |
@@ -27,10 +32,49 @@ Or, for local development, drop this repo under a skills directory (`~/.claude/s
 | `phoenix-deployment` | `runtime.exs` vs compile-time config, release migrations, runtime env, health checks |
 | `elixir-testing` | ExUnit, DataCase/ConnCase, the Ecto sandbox, fixtures, assertive tests |
 
-### Infrastructure
-| Skill | What it covers |
-| --- | --- |
-| `fly` | Fly.io ops — Prometheus/VictoriaLogs queries, `fly ssh`, production Postgres |
+### `fly`
+Fly.io infrastructure ops — Prometheus/VictoriaLogs queries, `fly ssh`, production Postgres.
+
+### `prior-art`
+Before building CI, tooling, infra, or reimplementing functionality — search for existing prior art (in-repo patterns, official/upstream repos, reusable actions, libraries) and mirror it instead of hand-rolling.
+
+## Repository layout
+
+```text
+.
+├── .claude-plugin/
+│   └── marketplace.json        # the catalog (pluginRoot: ./plugins)
+└── plugins/
+    ├── elixir-phoenix/
+    │   ├── .claude-plugin/plugin.json
+    │   ├── CHANGELOG.md
+    │   └── skills/             # one directory per skill
+    ├── fly/
+    │   ├── .claude-plugin/plugin.json
+    │   ├── CHANGELOG.md
+    │   └── skills/fly/         # SKILL.md + references/
+    └── prior-art/
+        ├── .claude-plugin/plugin.json
+        ├── CHANGELOG.md
+        └── skills/prior-art/
+```
+
+## Local development
+
+Add this repo as a local marketplace and install from it — changes to a skill's
+`SKILL.md` take effect immediately; other changes need `/reload-plugins`:
+
+```text
+/plugin marketplace add /path/to/this/repo
+/plugin install elixir-phoenix@ariesclark
+```
+
+Validate a plugin's structure and manifest before publishing:
+
+```bash
+claude plugin validate ./plugins/elixir-phoenix --strict
+claude plugin validate ./plugins/fly --strict
+```
 
 ## Credits
 

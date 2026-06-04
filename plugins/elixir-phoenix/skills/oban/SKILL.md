@@ -1,6 +1,7 @@
 ---
 name: oban
-description: Background jobs with Oban — worker design, return-value semantics (:ok / :cancel / :discard / {:error}), idempotency, unique jobs, queues, cron, and testing. Use when writing or reviewing Oban workers, enqueuing jobs, or job error/retry behavior. Triggers: Oban, background job, worker, perform/1, retry, unique job, Oban.Testing, cron.
+description: >-
+  Background jobs with Oban — worker design, return-value semantics (:ok / :cancel / :discard / {:error}), idempotency, unique jobs, queues, cron, and testing. Use when writing or reviewing Oban workers, enqueuing jobs, or job error/retry behavior. Triggers: Oban, background job, worker, perform/1, retry, unique job, Oban.Testing, cron.
 ---
 
 # Oban background jobs

@@ -1,16 +1,32 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "ariesclark",
-  "description": "Aries Clark's Claude Code skills — idiomatic Elixir & Phoenix plus Fly.io ops.",
+  "description": "Aries Clark's Claude Code skills catalog.",
   "owner": {
     "name": "Aries Clark",
     "url": "https://github.com/ariesclark"
   },
+  "metadata": {
+    "pluginRoot": "./plugins"
+  },
   "plugins": [
     {
-      "name": "ariesclark",
-      "source": "./",
-      "description": "Idiomatic Elixir & Phoenix skills — conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing.",
-      "version": "0.1.0"
+      "name": "elixir-phoenix",
+      "source": "./elixir-phoenix",
+      "category": "language",
+      "description": "Idiomatic Elixir & Phoenix skills — conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing."
+    },
+    {
+      "name": "fly",
+      "source": "./fly",
+      "category": "infrastructure",
+      "description": "Operate Fly.io infrastructure — hosted Prometheus & VictoriaLogs queries, SSH into live machines, and production database access."
+    },
+    {
+      "name": "prior-art",
+      "source": "./prior-art",
+      "category": "workflow",
+      "description": "Search for and mirror existing prior art — official/upstream repos, reusable actions, in-repo patterns — before hand-rolling CI, tooling, infra, or reimplementing functionality."
     }
   ]
 }
