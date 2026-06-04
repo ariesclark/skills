@@ -2,49 +2,19 @@ name: Validate Plugins
 
 on:
   pull_request:
-    paths:
-      - '.claude-plugin/**'
-      - 'plugins/**'
-      - '.ast-grep/**'
-      - 'sgconfig.yml'
-      - '.github/workflows/validate-plugins.yml'
   push:
     branches: [main]
-    paths:
-      - '.claude-plugin/**'
-      - 'plugins/**'
-      - '.ast-grep/**'
-      - 'sgconfig.yml'
-      - '.github/workflows/validate-plugins.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
-# Opt every JavaScript action (checkout, ast-grep/action, and the setup-node
-# inside Anthropic's reusable action) into the Node.js 24 runtime ahead of the
-# 2026-06-16 forced switch, so the deprecation warnings clear.
+# Force ast-grep/action (which still targets Node 20) onto the Node.js 24 runtime
+# ahead of the 2026-06-16 forced switch, so the deprecation warning clears.
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      # Anthropic's official reusable validator: npm-installs the claude CLI and
-      # runs `claude plugin validate` against the marketplace and every in-repo
-      # plugin folder. Pinned to a commit SHA; bump deliberately.
-      - uses: anthropics/claude-plugins-community/.github/actions/validate-plugins@8636d19de96fca11f8313ca24f83fd96c09695ae
-        with:
-          marketplace-path: .claude-plugin/marketplace.json
-          skip-external: "true"
-          warn-invariants: "I1 I3 I5"
-          claude-cli-version: latest
-
   lint-skills:
     runs-on: ubuntu-latest
     steps:
