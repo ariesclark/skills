@@ -19,6 +19,12 @@ on:
 permissions:
   contents: read
 
+# Opt every JavaScript action (checkout, ast-grep/action, and the setup-node
+# inside Anthropic's reusable action) into the Node.js 24 runtime ahead of the
+# 2026-06-16 forced switch, so the deprecation warnings clear.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -34,7 +40,7 @@ jobs:
         with:
           marketplace-path: .claude-plugin/marketplace.json
           skip-external: "true"
-          warn-invariants: "I1 I3 I5 I8"
+          warn-invariants: "I1 I3 I5"
           claude-cli-version: latest
 
   lint-skills:

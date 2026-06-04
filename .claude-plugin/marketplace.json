@@ -6,25 +6,22 @@
     "name": "Aries Clark",
     "url": "https://github.com/ariesclark"
   },
-  "metadata": {
-    "pluginRoot": "./plugins"
-  },
   "plugins": [
     {
       "name": "elixir-phoenix",
-      "source": "./elixir-phoenix",
+      "source": "./plugins/elixir-phoenix",
       "category": "language",
       "description": "Idiomatic Elixir & Phoenix skills — conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing."
     },
     {
       "name": "fly",
-      "source": "./fly",
+      "source": "./plugins/fly",
       "category": "infrastructure",
       "description": "Operate Fly.io infrastructure — hosted Prometheus & VictoriaLogs queries, SSH into live machines, and production database access."
     },
     {
       "name": "prior-art",
-      "source": "./prior-art",
+      "source": "./plugins/prior-art",
       "category": "workflow",
       "description": "Search for and mirror existing prior art — official/upstream repos, reusable actions, in-repo patterns — before hand-rolling CI, tooling, infra, or reimplementing functionality."
     }
