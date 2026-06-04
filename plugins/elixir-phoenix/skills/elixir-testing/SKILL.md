@@ -1,7 +1,9 @@
 ---
 name: elixir-testing
 description: >-
-  Testing Elixir/Phoenix backends with ExUnit — DataCase/ConnCase setup, the Ecto SQL sandbox, fixtures, JSON API tests, changeset/context tests, and assertive test style. Use when writing or reviewing ExUnit tests, fixtures, or test setup. Triggers: ExUnit, test, DataCase, ConnCase, Ecto sandbox, fixtures, assert, JSON API test.
+  Testing Elixir/Phoenix backends with ExUnit — DataCase/ConnCase setup, the Ecto SQL sandbox, fixtures, JSON API tests, changeset/context tests, and assertive test style.
+when_to_use: >-
+  Use when writing or reviewing ExUnit tests, fixtures, or test setup. Triggers: ExUnit, test, DataCase, ConnCase, Ecto sandbox, fixtures, assert, JSON API test.
 ---
 
 # Elixir/Phoenix testing (ExUnit)

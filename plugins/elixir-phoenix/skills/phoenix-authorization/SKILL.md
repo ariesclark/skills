@@ -1,7 +1,9 @@
 ---
 name: phoenix-authorization
 description: >-
-  Authorization / access control for Phoenix apps — server-side checks, ownership verification, scope-based queries to prevent IDOR, and policy modules. Use when writing or reviewing any code that decides whether the current user may see or change a resource. Triggers: authorization, access control, IDOR, ownership, policy module, scoped query, can the user.
+  Authorization / access control for Phoenix apps — server-side checks, ownership verification, scope-based queries to prevent IDOR, and policy modules.
+when_to_use: >-
+  Use when writing or reviewing any code that decides whether the current user may see or change a resource. Triggers: authorization, access control, IDOR, ownership, policy module, scoped query, can the user.
 ---
 
 # Phoenix authorization

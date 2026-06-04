@@ -1,7 +1,9 @@
 ---
 name: elixir-conventions
 description: >-
-  Idiomatic Elixir conventions for control flow, error handling, and code shape. Use when writing or reviewing Elixir code — error tuples vs exceptions, raising, `with`/`case`/`else`, pattern-matching assertions, pipelines, and module API design. Triggers: "is this idiomatic Elixir", error handling, `with` statement, let-it-crash, defensive code.
+  Idiomatic Elixir conventions for control flow, error handling, and code shape.
+when_to_use: >-
+  Use when writing or reviewing Elixir code — error tuples vs exceptions, raising, `with`/`case`/`else`, pattern-matching assertions, pipelines, and module API design. Triggers: "is this idiomatic Elixir", error handling, `with` statement, let-it-crash, defensive code.
 ---
 
 # Elixir conventions

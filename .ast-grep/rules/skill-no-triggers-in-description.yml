@@ -1,0 +1,14 @@
+id: skill-no-triggers-in-description
+language: yaml
+severity: error
+message: >-
+  Trigger words belong in `when_to_use`, not `description`. Move the "Triggers:"
+  list into a `when_to_use:` field so `description` stays a tight statement of
+  what the skill does (both still count toward the 1,536-char listing cap).
+files:
+  - "**/SKILL.md"
+rule:
+  pattern: "description: $D"
+constraints:
+  D:
+    regex: "[Tt]riggers?:"
