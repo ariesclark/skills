@@ -1,0 +1,15 @@
+{
+  "name": "ariesclark",
+  "displayName": "Aries Clark's Elixir & Phoenix Skills",
+  "version": "0.1.0",
+  "description": "Idiomatic Elixir & Phoenix skills — conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing.",
+  "author": {
+    "name": "Aries Clark",
+    "email": "me@ariesclark.com",
+    "url": "https://github.com/ariesclark"
+  },
+  "homepage": "https://github.com/ariesclark/skills",
+  "repository": "https://github.com/ariesclark/skills",
+  "license": "MIT",
+  "keywords": ["elixir", "phoenix", "ecto", "oban", "otp", "best-practices", "skills"]
+}

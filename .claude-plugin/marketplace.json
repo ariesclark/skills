@@ -1,0 +1,16 @@
+{
+  "name": "ariesclark",
+  "description": "Aries Clark's Claude Code skills — idiomatic Elixir & Phoenix plus Fly.io ops.",
+  "owner": {
+    "name": "Aries Clark",
+    "url": "https://github.com/ariesclark"
+  },
+  "plugins": [
+    {
+      "name": "ariesclark",
+      "source": "./",
+      "description": "Idiomatic Elixir & Phoenix skills — conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing.",
+      "version": "0.1.0"
+    }
+  ]
+}
