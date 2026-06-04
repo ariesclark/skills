@@ -1,0 +1,23 @@
+{
+  "cSpell.words": [
+    "anthropics",
+    "changeset",
+    "changesets",
+    "Dockerfiles",
+    "Ecto",
+    "frontmatter",
+    "GenServer",
+    "justfile",
+    "Oban",
+    "OpenTelemetry",
+    "pinnable",
+    "Phoenix",
+    "preload",
+    "Prometheus",
+    "sgconfig",
+    "stdlib",
+    "Terraform",
+    "unpinnable",
+    "VictoriaLogs"
+  ]
+}

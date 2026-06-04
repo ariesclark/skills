@@ -1,0 +1,8 @@
+ruleDirs:
+  - .ast-grep/rules
+# SKILL.md is markdown, but we only want to lint its YAML frontmatter — force the
+# YAML grammar onto these files so frontmatter keys are matchable. tree-sitter is
+# error-tolerant, so the markdown body after the closing `---` is ignored.
+languageGlobs:
+  yaml:
+    - "**/SKILL.md"

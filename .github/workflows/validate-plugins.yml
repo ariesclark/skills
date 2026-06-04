@@ -1,0 +1,53 @@
+name: Validate Plugins
+
+on:
+  pull_request:
+    paths:
+      - '.claude-plugin/**'
+      - 'plugins/**'
+      - '.ast-grep/**'
+      - 'sgconfig.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.claude-plugin/**'
+      - 'plugins/**'
+      - '.ast-grep/**'
+      - 'sgconfig.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Anthropic's official reusable validator: npm-installs the claude CLI and
+      # runs `claude plugin validate` against the marketplace and every in-repo
+      # plugin folder. Pinned to a commit SHA; bump deliberately.
+      - uses: anthropics/claude-plugins-community/.github/actions/validate-plugins@8636d19de96fca11f8313ca24f83fd96c09695ae
+        with:
+          marketplace-path: .claude-plugin/marketplace.json
+          skip-external: "true"
+          warn-invariants: "I1 I3 I5 I8"
+          claude-cli-version: latest
+
+  lint-skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Official ast-grep action: installs ast-grep and runs `ast-grep scan`
+      # against sgconfig.yml. Our rules in .ast-grep/rules cap SKILL.md
+      # frontmatter field lengths (description ≤1024, when_to_use ≤512) so the
+      # combined text stays under Claude Code's 1,536-char listing cap. Pinned
+      # to a commit SHA; bump deliberately.
+      - uses: ast-grep/action@6701c56c6825b7aefc56b019ccef89dbcfbee37d
+        with:
+          version: 0.43.0
+          config: sgconfig.yml

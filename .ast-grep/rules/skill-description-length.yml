@@ -1,0 +1,15 @@
+id: skill-description-too-long
+language: yaml
+severity: error
+message: >-
+  Skill `description` exceeds 1024 characters. Claude Code truncates the combined
+  `description` + `when_to_use` text at a 1,536-char listing cap, silently dropping
+  triggering keywords past it. Lead with the key use case and move trigger phrases
+  into `when_to_use`.
+files:
+  - "**/SKILL.md"
+rule:
+  pattern: "description: $D"
+constraints:
+  D:
+    regex: ".{1025,}"

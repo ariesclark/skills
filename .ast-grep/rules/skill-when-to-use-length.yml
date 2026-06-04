@@ -1,0 +1,14 @@
+id: skill-when-to-use-too-long
+language: yaml
+severity: error
+message: >-
+  Skill `when_to_use` exceeds 512 characters. Combined with `description` it must
+  stay under Claude Code's 1,536-char listing cap, or trailing trigger phrases are
+  silently dropped.
+files:
+  - "**/SKILL.md"
+rule:
+  pattern: "when_to_use: $W"
+constraints:
+  W:
+    regex: "[\\s\\S]{513,}"
