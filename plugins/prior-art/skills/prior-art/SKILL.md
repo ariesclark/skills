@@ -2,7 +2,7 @@
 name: prior-art
 description: Find and mirror existing prior art before hand-rolling CI/CD, workflows, build tooling, infrastructure-as-code, scaffolding, or reimplementing functionality a well-known project has already solved.
 when_to_use: >-
-  Setting up CI, writing a workflow or pipeline, adding a linter/formatter/release process, scaffolding a plugin or package, configuring Docker/Terraform/Kubernetes, or reimplementing standard functionality (algorithms, parsers, format handling). Trigger phrases — "set up CI", "add a GitHub Action", "write a workflow", "release automation", "scaffold", "boilerplate", "reusable action", "infra config", "don't reinvent".
+  Use before setting up CI, writing a workflow or pipeline, adding a linter/formatter/release automation, scaffolding a plugin or package, configuring Docker/Terraform/Kubernetes, or reimplementing standard functionality (algorithms, parsers, format handling) — anytime the impulse is to hand-roll boilerplate, a reusable action, or infra config rather than reuse existing prior art.
 ---
 
 # Prior art first

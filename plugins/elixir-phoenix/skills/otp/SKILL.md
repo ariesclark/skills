@@ -3,7 +3,7 @@ name: otp
 description: >-
   OTP concurrency patterns for Elixir — GenServer, Supervisor/DynamicSupervisor, Task/Task.Supervisor, Agent, Registry, ETS, and process lifecycle.
 when_to_use: >-
-  Use when writing or reviewing stateful processes, supervision trees, background concurrency, or anything touching `GenServer`/`Supervisor`/`Task`/`:ets`. Triggers: GenServer, supervisor, handle_call, handle_continue, Task.async, process state, let-it-crash.
+  Use when writing or reviewing stateful processes, supervision trees, or background concurrency — anything touching `GenServer` (`handle_call`/`handle_continue`), `Supervisor`, `Task.async`, `Registry`, or `:ets`, including process-state ownership and let-it-crash design.
 ---
 
 # OTP patterns

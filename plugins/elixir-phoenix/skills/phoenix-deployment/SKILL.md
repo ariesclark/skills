@@ -3,7 +3,7 @@ name: phoenix-deployment
 description: >-
   Deploying Phoenix/Elixir releases to production — runtime.exs vs config.exs, release migrations, runtime env (PHX_HOST/PHX_SERVER/SECRET_KEY_BASE), assets, health checks, and log levels.
 when_to_use: >-
-  Use when configuring releases, deploys, runtime config, or debugging "works locally, breaks in prod". Triggers: deployment, release, runtime.exs, mix release, migrations in prod, PHX_HOST, SECRET_KEY_BASE, health check.
+  Use when configuring releases, deploys, or runtime config — `runtime.exs` vs compile-time config, `mix release`, migrations in prod, env like `PHX_HOST`/`SECRET_KEY_BASE`, and health checks — or debugging "works locally, breaks in prod".
 ---
 
 # Phoenix deployment

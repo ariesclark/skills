@@ -3,7 +3,7 @@ name: phoenix-json-api
 description: >-
   Building JSON APIs with Phoenix — the :api pipeline, controllers + action_fallback, a unified error type, error rendering, pagination, versioning, and token auth.
 when_to_use: >-
-  Use when writing or reviewing JSON controllers, routers, fallback controllers, or API error handling. Triggers: JSON API, action_fallback, FallbackController, API error, Bearer token, pagination, API versioning.
+  Use when writing or reviewing JSON controllers, routers, or API error handling — the `:api` pipeline, `action_fallback`/`FallbackController`, error shapes, pagination, versioning, and Bearer-token auth.
 ---
 
 # Phoenix JSON APIs

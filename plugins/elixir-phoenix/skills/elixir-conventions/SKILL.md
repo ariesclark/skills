@@ -3,14 +3,14 @@ name: elixir-conventions
 description: >-
   Idiomatic Elixir conventions for control flow, error handling, and code shape.
 when_to_use: >-
-  Use when writing or reviewing Elixir code — error tuples vs exceptions, raising, `with`/`case`/`else`, pattern-matching assertions, pipelines, and module API design. Triggers: "is this idiomatic Elixir", error handling, `with` statement, let-it-crash, defensive code.
+  Use when writing or reviewing Elixir code and judging whether it's idiomatic — error tuples vs. exceptions, raising and let-it-crash, `with`/`case`/`else` control flow, pattern-matching assertions over defensive checks, pipelines, and module API design.
 ---
 
 # Elixir conventions
 
 Recurring patterns that lead to worse code, and the better alternatives.
 
-## `Map.get/2` and `Keyword.get/2` vs. `Access`
+## 1. `Map.get/2` and `Keyword.get/2` vs. `Access`
 
 `Map.get/2` and `Keyword.get/2` lock you into one data structure — change the structure later and you have to update every call site. Prefer `Access`:
 
@@ -23,7 +23,7 @@ Map.get(opts, :foo)
 opts[:foo]
 ```
 
-## Don't pipe results into the following function
+## 2. Don't pipe results into the following function
 
 Side-effecting functions return results like `{:ok, term()} | {:error, term()}`. Don't pipe those results into the next function — handle them directly with `case` or `with`.
 
@@ -72,7 +72,7 @@ end
 
 It makes the calling function bigger, but you can read it top to bottom and understand every control-flow path.
 
-## Don't pipe into case statements
+## 3. Don't pipe into case statements
 
 If you find yourself piping into `case`, assign the intermediate steps to a variable instead.
 
@@ -94,7 +94,7 @@ case store_post(changeset) do
 end
 ```
 
-## Don't hide higher-order functions
+## 4. Don't hide higher-order functions
 
 When working with collections, write functions that operate on a single entity and use the higher-order function directly in your pipeline.
 
@@ -132,7 +132,7 @@ end
 
 As a general rule, strive to eliminate functions that have only a single call site.
 
-## Avoid else in with blocks
+## 5. Avoid else in with blocks
 
 `else` is fine when you need an operation that's generic across all returned error values. Don't use it to handle every potential error (or even a large number of them).
 
@@ -205,7 +205,7 @@ case main() do
 end
 ```
 
-## State what you want, not what you don't
+## 6. State what you want, not what you don't
 
 Be intentional about a function's requirements. Don't check that a value isn't `nil` when what you actually expect is a string:
 
@@ -219,7 +219,7 @@ def call_service(%{req: req}) when is_binary(req), do: ...
 
 The same goes for `case` and `if`. Be explicit about what you expect, and prefer to raise or crash on arguments that violate those expectations.
 
-## Only return error tuples when the caller can do something about it
+## 7. Only return error tuples when the caller can do something about it
 
 Only make callers deal with errors they can actually act on. If an API can error and there's nothing the caller can do about it, raise an exception or throw instead of returning a result tuple.
 
@@ -239,7 +239,7 @@ def get(table \\ __MODULE__, id) do
 end
 ```
 
-## Raise exceptions if you receive invalid data
+## 8. Raise exceptions if you receive invalid data
 
 Don't be afraid to raise when a return value or piece of data violates your expectations. If you call a downstream service that should always return JSON, use `Jason.decode!` and skip the extra error handling.
 
@@ -263,7 +263,7 @@ end
 
 This lets the process crash (which is good) and removes the useless error-handling logic.
 
-## Use for when checking collections in tests
+## 9. Use for when checking collections in tests
 
 A quick one that makes test failures far more helpful:
 

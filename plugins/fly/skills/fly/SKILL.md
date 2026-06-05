@@ -1,6 +1,9 @@
 ---
 name: fly
-description: Operate on Fly.io infrastructure — query the org's hosted Prometheus and VictoriaLogs, run commands on live app machines via SSH, and connect to the production database. Use whenever a task touches the `fly` CLI, the Fly Prometheus API, VictoriaLogs, a live app release, or the production database — e.g. "rpc into prod", "fly ssh console", "psql against prod", "Prometheus query", "search the logs", "what's on the production node".
+description: >-
+  Operate Fly.io infrastructure — query the org's hosted Prometheus and VictoriaLogs, run commands on live app machines via SSH, and connect to the production database.
+when_to_use: >-
+  Use when a task touches the `fly` CLI, the Fly Prometheus or VictoriaLogs API, a live app release, or the production database — e.g. running `fly ssh console`, an RPC into prod, `psql` against prod, a Prometheus query, searching the logs, or checking what's on the production node.
 allowed-tools: Bash(fly tokens create readonly:*) Bash(fly tokens list:*) Bash(fly machine list:*) Bash(fly pg db list:*) Bash(fly pg config show:*) Bash(fly pg events list:*) Bash(curl -sG https://api.fly.io/prometheus/:*) Bash(curl -sG https://api.fly.io/victorialogs/:*) Bash(date:*) Bash(jq:*) Bash(git remote -v:*) Bash(find . -name fly.toml:*) WebFetch(domain:fly.io)
 disallowed-tools: Bash(fly auth token:*)
 ---
