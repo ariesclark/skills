@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "ariesclark",
-  "description": "Aries Clark's Claude Code skills catalog.",
+  "description": "Aries Clark's agent skills catalog.",
   "owner": {
     "name": "Aries Clark",
     "url": "https://github.com/ariesclark"
@@ -24,6 +24,19 @@
       "source": "./plugins/prior-art",
       "category": "workflow",
       "description": "Search for and mirror existing prior art — official/upstream repos, reusable actions, in-repo patterns — before hand-rolling CI, tooling, infra, or reimplementing functionality."
+    },
+    {
+      "name": "humanizer",
+      "source": {
+        "source": "github",
+        "repo": "blader/humanizer",
+        "ref": "main",
+        "sha": "a2ace14a88a6746f64f1f53ed8272d6788828038"
+      },
+      "strict": false,
+      "category": "writing",
+      "description": "Strip AI-writing tells from prose — inflated symbolism, em-dash overuse, rule of three, AI vocabulary, passive voice, and negative parallelisms.",
+      "author": { "name": "blader", "url": "https://github.com/blader" }
     }
   ]
 }
