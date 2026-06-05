@@ -23,7 +23,7 @@
       "name": "prior-art",
       "source": "./plugins/prior-art",
       "category": "workflow",
-      "description": "Search for and mirror existing prior art (official/upstream repos, reusable actions, in-repo patterns) before hand-rolling CI, tooling, infra, or reimplementing functionality."
+      "description": "Find and reuse existing prior art (libraries, established methodology, official documentation, upstream repos, reusable CI and tooling) before hand-rolling or reimplementing something already solved."
     },
     {
       "name": "humanizer",

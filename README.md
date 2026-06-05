@@ -26,7 +26,7 @@ Idiomatic Elixir & Phoenix backend skills: conventions, OTP, Ecto, JSON APIs, au
 Fly.io infrastructure ops: Prometheus/VictoriaLogs queries, `fly ssh`, production Postgres.
 
 ### [`prior-art`](plugins/prior-art/README.md)
-Search for and mirror existing prior art before hand-rolling CI, tooling, infra, or reimplementing functionality.
+Find and reuse existing prior art (libraries, established methodology, official docs, upstream patterns) before hand-rolling or reimplementing what's already solved.
 
 ## Local development
 

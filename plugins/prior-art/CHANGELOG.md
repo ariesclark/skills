@@ -5,7 +5,8 @@ follows [Semantic Versioning](https://semver.org).
 
 ## [0.1.0]
 
-Initial release. The `prior-art` skill: before building CI, tooling, infra
-config, or reimplementing functionality, search for existing prior art (in-repo
-patterns, official/upstream repos, reusable actions, libraries) and mirror it
-instead of hand-rolling.
+Initial release. The `prior-art` skill: before adding a dependency,
+reimplementing functionality, designing an approach, or hand-rolling CI and
+tooling, search for existing prior art (libraries, established methodology,
+official docs, upstream repos, reusable actions) and reuse it instead of
+building from scratch.

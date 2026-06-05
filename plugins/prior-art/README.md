@@ -1,8 +1,8 @@
 # Prior Art
 
-Search for and mirror existing prior art (official/upstream repos, reusable
-actions, in-repo patterns) before hand-rolling CI, tooling, infra, or
-reimplementing functionality.
+Find and reuse existing prior art (libraries, established methodology, official
+documentation, upstream repos, reusable CI and tooling) before hand-rolling or
+reimplementing something that has already been solved.
 
 ## Install
 
@@ -13,12 +13,15 @@ reimplementing functionality.
 
 ## The `prior-art` skill
 
-Before building CI, tooling, infra, or reimplementing a capability, the skill
-prompts a search for how it has already been solved: first this repo and its
-org, then the official or upstream project, then the wider ecosystem (reusable
-actions, libraries, template repos). It presents what it finds and proposes
-adopting it, pins any third-party source to an immutable ref, and hand-rolls
-only with a stated reason.
+Before adding a dependency, reimplementing a capability, designing an approach,
+or hand-rolling CI and tooling, the skill prompts a search for how it has already
+been solved or documented: first this repo and its org, then the official or
+upstream project's repo and docs, then the wider ecosystem (libraries, reusable
+actions, reference implementations, template repos). It favors a maintained
+library over a reimplementation and an established methodology over a novel one,
+reads the real docs or source instead of reconstructing from memory, presents
+what it finds and proposes adopting it, and hand-rolls only with a stated
+reason.
 
 ## License
 

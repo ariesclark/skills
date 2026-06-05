@@ -3,7 +3,7 @@
   "name": "prior-art",
   "displayName": "Prior Art",
   "version": "0.1.0",
-  "description": "Search for and mirror existing prior art (official/upstream repos, reusable actions, in-repo patterns) before hand-rolling CI, tooling, infra, or reimplementing functionality.",
+  "description": "Find and reuse existing prior art (libraries, established methodology, official documentation, upstream repos, reusable CI and tooling) before hand-rolling or reimplementing something already solved.",
   "author": {
     "name": "Aries Clark",
     "email": "me@ariesclark.com",
@@ -12,5 +12,5 @@
   "homepage": "https://github.com/ariesclark/skills",
   "repository": "https://github.com/ariesclark/skills",
   "license": "MIT",
-  "keywords": ["prior-art", "ci", "tooling", "infrastructure", "scaffolding", "reuse", "best-practices"]
+  "keywords": ["prior-art", "dependencies", "methodology", "documentation", "reuse", "ci", "tooling", "scaffolding", "best-practices"]
 }
