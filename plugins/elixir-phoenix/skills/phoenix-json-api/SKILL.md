@@ -1,25 +1,25 @@
 ---
 name: phoenix-json-api
 description: >-
-  Building JSON APIs with Phoenix — the :api pipeline, controllers + action_fallback, a unified error type, error rendering, pagination, versioning, and token auth.
+  Building JSON APIs with Phoenix: the :api pipeline, controllers + action_fallback, a unified error type, error rendering, pagination, versioning, and token auth.
 when_to_use: >-
-  Use when writing or reviewing JSON controllers, routers, or API error handling — the `:api` pipeline, `action_fallback`/`FallbackController`, error shapes, pagination, versioning, and Bearer-token auth.
+  Use when writing or reviewing JSON controllers, routers, or API error handling: the `:api` pipeline, `action_fallback`/`FallbackController`, error shapes, pagination, versioning, and Bearer-token auth.
 ---
 
 # Phoenix JSON APIs
 
-Pairs with `elixir-conventions` (especially §5 unified error struct, §7–§8 raise vs return) and `phoenix-authorization`.
+Pairs with `elixir-conventions` (especially §5 unified error struct, §7 and §8 raise vs return) and `phoenix-authorization`.
 
 ## RULES
-1. **`:api` pipeline does `plug :accepts, ["json"]`** and token/session auth — no CSRF/session/flash plumbing meant for HTML.
+1. **`:api` pipeline does `plug :accepts, ["json"]`** and token/session auth, with no CSRF/session/flash plumbing meant for HTML.
 2. **Controllers return either a `%Plug.Conn{}` or `{:error, _}`.** Use `action_fallback` to render the error shapes.
-3. **The FallbackController matches ONLY known error shapes. No catch-all.** An action that returns anything else is a bug — let it raise so your error reporter captures it with a stacktrace.
+3. **The FallbackController matches ONLY known error shapes. No catch-all.** An action that returns anything else is a bug; let it raise so your error reporter captures it with a stacktrace.
 4. **Use one unified error type** (a `defexception` struct) that the controller renders consistently and that callers can also `raise`.
 5. **Return `{:error, _}` only for failures the client can act on** (validation, not-found, auth, rate-limit). Dependency/invariant failures raise → 500 (see `elixir-conventions` §7).
 6. **Stable response envelope and status codes.** Decide your error body shape once and keep it.
 7. **Paginate every unbounded collection** (clamp page size); never return an unbounded list.
 
-## FallbackController — match known, let the rest raise
+## FallbackController: match known, let the rest raise
 
 ```elixir
 defmodule MyAppWeb.FallbackController do
@@ -30,7 +30,7 @@ defmodule MyAppWeb.FallbackController do
   def call(conn, {:error, %MyApp.Error{} = e}),       do: conn |> render_error(e.status, e) |> halt()
   def call(conn, {:error, :not_found}),               do: conn |> render_error(:not_found, :not_found) |> halt()
   def call(conn, {:error, :unauthorized}),            do: conn |> render_error(:unauthorized, :unauthorized) |> halt()
-  # NO `def call(conn, other)` catch-all — an unmatched return raises FunctionClauseError,
+  # NO `def call(conn, other)` catch-all: an unmatched return raises FunctionClauseError,
   # which Sentry.PlugCapture (or your reporter) captures WITH a stacktrace and renders as a 500.
 end
 ```
@@ -67,4 +67,4 @@ Use `with` for the happy path; don't add `else` clauses that rewrap errors (`eli
 ## Pagination / versioning / auth
 - Clamp page size server-side: `limit = attrs |> get_int("limit", 25) |> min(100)`. Return `data` + `meta` (cursor or page/total).
 - Version via path (`/api/v1`) or an `Accept` header; pick one and route pipelines accordingly.
-- Bearer tokens: a `plug` reads `authorization`, verifies, assigns the current identity, and halts with `{:error, :unauthorized}` on failure — compare tokens with `Plug.Crypto.secure_compare/2` (see `phoenix-security`).
+- Bearer tokens: a `plug` reads `authorization`, verifies, assigns the current identity, and halts with `{:error, :unauthorized}` on failure. Compare tokens with `Plug.Crypto.secure_compare/2` (see `phoenix-security`).

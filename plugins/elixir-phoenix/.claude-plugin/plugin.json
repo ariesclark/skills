@@ -3,7 +3,7 @@
   "name": "elixir-phoenix",
   "displayName": "Elixir & Phoenix Skills",
   "version": "0.1.0",
-  "description": "Idiomatic Elixir & Phoenix skills — conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing.",
+  "description": "Idiomatic Elixir & Phoenix skills: conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing.",
   "author": {
     "name": "Aries Clark",
     "email": "me@ariesclark.com",

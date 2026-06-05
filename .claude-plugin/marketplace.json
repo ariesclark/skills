@@ -11,19 +11,19 @@
       "name": "elixir-phoenix",
       "source": "./plugins/elixir-phoenix",
       "category": "language",
-      "description": "Idiomatic Elixir & Phoenix skills — conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing."
+      "description": "Idiomatic Elixir & Phoenix skills: conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing."
     },
     {
       "name": "fly",
       "source": "./plugins/fly",
       "category": "infrastructure",
-      "description": "Operate Fly.io infrastructure — hosted Prometheus & VictoriaLogs queries, SSH into live machines, and production database access."
+      "description": "Operate Fly.io infrastructure: hosted Prometheus & VictoriaLogs queries, SSH into live machines, and production database access."
     },
     {
       "name": "prior-art",
       "source": "./plugins/prior-art",
       "category": "workflow",
-      "description": "Search for and mirror existing prior art — official/upstream repos, reusable actions, in-repo patterns — before hand-rolling CI, tooling, infra, or reimplementing functionality."
+      "description": "Search for and mirror existing prior art (official/upstream repos, reusable actions, in-repo patterns) before hand-rolling CI, tooling, infra, or reimplementing functionality."
     },
     {
       "name": "humanizer",
@@ -35,7 +35,7 @@
       },
       "strict": false,
       "category": "writing",
-      "description": "Strip AI-writing tells from prose — inflated symbolism, em-dash overuse, rule of three, AI vocabulary, passive voice, and negative parallelisms.",
+      "description": "Strip AI-writing tells from prose: inflated symbolism, em-dash overuse, rule of three, AI vocabulary, passive voice, and negative parallelisms.",
       "author": { "name": "blader", "url": "https://github.com/blader" }
     }
   ]

@@ -1,9 +1,9 @@
 ---
 name: ecto
 description: >-
-  Ecto patterns for Postgres-backed Elixir/Phoenix apps — schemas, changesets (per-operation, composition, validations), associations, cast_assoc/cast_embed, Ecto.Multi, transactions, migrations, and query performance (N+1, indexes).
+  Ecto patterns for Postgres-backed Elixir/Phoenix apps: schemas, changesets (per-operation, composition, validations), associations, cast_assoc/cast_embed, Ecto.Multi, transactions, migrations, and query performance (N+1, indexes).
 when_to_use: >-
-  Use when writing or reviewing Ecto schemas, changesets, associations (`cast_assoc`/`cast_embed`), `Ecto.Multi` transactions, migrations, or `Repo`/query code — including preloads, N+1, and indexing.
+  Use when writing or reviewing Ecto schemas, changesets, associations (`cast_assoc`/`cast_embed`), `Ecto.Multi` transactions, migrations, or `Repo`/query code, including preloads, N+1, and indexing.
 ---
 
 # Ecto patterns
@@ -11,26 +11,26 @@ when_to_use: >-
 Pairs with `elixir-conventions`. Database errors a caller can act on (validation, conflict) are values; anything that "can't happen" should crash.
 
 ## RULES
-1. **One changeset per operation**, not one mega-changeset. `registration_changeset`, `profile_changeset`, `admin_changeset` — each casts only its own fields. Don't toggle behavior with option flags.
+1. **One changeset per operation**, not one mega-changeset. `registration_changeset`, `profile_changeset`, `admin_changeset`: each casts only its own fields. Don't toggle behavior with option flags.
 2. **`cast` the fields you accept; never `cast` everything.** The cast allowlist is your mass-assignment boundary.
 3. **Pair `unsafe_validate_unique` with a DB `unique_constraint`.** The first gives a friendly form error; the second is the source of truth that catches the concurrent insert the validation can't see.
 4. **`cast_assoc`/`cast_embed` require the association preloaded** on the struct you're updating, and a changeset on the child that casts its **own** fields (including any required FKs). Set `on_replace:` explicitly.
-5. **Multi-step writes go in `Ecto.Multi`,** not nested `Repo` calls — you get one transaction and a `{:error, failed_step, value, changes_so_far}` you can branch on.
+5. **Multi-step writes go in `Ecto.Multi`,** not nested `Repo` calls. You get one transaction and a `{:error, failed_step, value, changes_so_far}` you can branch on.
 6. **Index every foreign key and every column you filter/sort by.** Postgres does not auto-index FKs.
 7. **Preload deliberately.** N+1s come from accessing associations in a loop; preload up front or join.
-8. **Raise on unrecoverable DB state.** Use `Repo.insert!`/`Repo.get!` etc. when a failure means a bug, not a user-facing error (see `elixir-conventions` §7–§8).
+8. **Raise on unrecoverable DB state.** Use `Repo.insert!`/`Repo.get!` etc. when a failure means a bug, not a user-facing error (see `elixir-conventions` §7 and §8).
 
-## Changesets — assertive, not defensive
+## Changesets: assertive, not defensive
 
 ```elixir
-# Don't — defensive option-juggling inside one changeset
+# Don't: defensive option-juggling inside one changeset
 def changeset(user, attrs, opts \\ []) do
   user
   |> cast(attrs, [:email, :password])
   |> then(fn cs -> if Keyword.get(opts, :validate_unique, true), do: unsafe_validate_unique(cs, :email, Repo), else: cs end)
 end
 
-# Do — one changeset per operation; the caller picks
+# Do: one changeset per operation; the caller picks
 def registration_changeset(user, attrs) do
   user
   |> cast(attrs, [:email, :password])
@@ -71,7 +71,7 @@ Ecto.Multi.new()
 end
 ```
 
-Don't write a generic catch-all `else` over every step — match the steps whose failure the caller can handle; let genuinely unexpected failures raise.
+Don't write a generic catch-all `else` over every step. Match the steps whose failure the caller can handle; let genuinely unexpected failures raise.
 
 ## Migrations & performance
 - Reversible migrations; `create index(...)` on FKs and filter/sort columns. Consider `concurrently: true` (with `@disable_ddl_transaction true`) for large tables.

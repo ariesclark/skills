@@ -1,9 +1,9 @@
 ---
 name: elixir-testing
 description: >-
-  Testing Elixir/Phoenix backends with ExUnit — DataCase/ConnCase setup, the Ecto SQL sandbox, fixtures, JSON API tests, changeset/context tests, and assertive test style.
+  Testing Elixir/Phoenix backends with ExUnit: DataCase/ConnCase setup, the Ecto SQL sandbox, fixtures, JSON API tests, changeset/context tests, and assertive test style.
 when_to_use: >-
-  Use when writing or reviewing ExUnit tests, fixtures, or test setup — `DataCase`/`ConnCase`, the Ecto SQL sandbox, assertions, and JSON API tests.
+  Use when writing or reviewing ExUnit tests, fixtures, or test setup: `DataCase`/`ConnCase`, the Ecto SQL sandbox, assertions, and JSON API tests.
 ---
 
 # Elixir/Phoenix testing (ExUnit)
@@ -15,17 +15,17 @@ Pairs with `elixir-conventions`. Tests should be assertive: state the exact expe
 2. **`async: true` only when the test owns its data via the sandbox** and touches no shared global state (named processes, ETS, external services). Otherwise `async: false`.
 3. **Assertive assertions over `Enum.all?`.** A `for`-comprehension of asserts (or per-element asserts) tells you *which* element failed; `assert Enum.all?(...)` just says `false`.
 4. **Match the exact result,** don't assert truthiness. `assert {:ok, %User{email: "a@b.c"}} = create_user(attrs)` beats `assert create_user(attrs)`.
-5. **Test changesets via `errors_on/1`** — assert specific field errors, not just `refute changeset.valid?`.
+5. **Test changesets via `errors_on/1`:** assert specific field errors, not just `refute changeset.valid?`.
 6. **Fixtures build valid baseline data;** override per test. Keep them small and composable.
 7. **Don't sleep to wait.** Use `assert_receive`, `Oban.Testing`, or sandbox-aware sync points.
 
 ## Assertive collection checks
 
 ```elixir
-# Don't — failure is a useless `false`
+# Don't: failure is a useless `false`
 assert Enum.all?(users, & &1.active)
 
-# Do — failure names the offending element
+# Do: failure names the offending element
 for user <- users, do: assert user.active
 ```
 
@@ -81,7 +81,7 @@ end
 ```
 
 ## The Ecto sandbox
-- `DataCase`/`ConnCase` check out a sandboxed connection per test and roll it back after — tests don't see each other's writes.
+- `DataCase`/`ConnCase` check out a sandboxed connection per test and roll it back after, so tests don't see each other's writes.
 - For code under test that runs in **another process** (Task/GenServer/Oban), grant it sandbox access (`Ecto.Adapters.SQL.Sandbox.allow/3`) or use shared mode with `async: false`.
 
 ## Before you finish

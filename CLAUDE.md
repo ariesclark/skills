@@ -21,11 +21,11 @@ to `plugin.json`, hooks, or MCP config need `/reload-plugins` or a restart.
 
 ## References
 
-- [Skills](https://code.claude.com/docs/en/skills) — `SKILL.md` structure,
+- [Skills](https://code.claude.com/docs/en/skills): `SKILL.md` structure,
   frontmatter, and supported features.
-- [Plugins](https://code.claude.com/docs/en/plugins) — authoring plugins and their
+- [Plugins](https://code.claude.com/docs/en/plugins): authoring plugins and their
   components.
-- [Plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces) —
+- [Plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces):
   `.claude-plugin/marketplace.json` and distribution.
-- [Plugins reference](https://code.claude.com/docs/en/plugins-reference) — full
+- [Plugins reference](https://code.claude.com/docs/en/plugins-reference): full
   manifest and directory-layout reference.

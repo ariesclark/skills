@@ -1,8 +1,8 @@
-# ariesclark — Claude Code skills
+# ariesclark Claude Code skills
 
-A Claude Code **marketplace** catalog of skills, organized as domain plugins you
-install independently. Currently: idiomatic **Elixir & Phoenix** skills and a
-**Fly.io** ops skill.
+A Claude Code marketplace catalog of skills, organized as domain plugins you
+install independently. Currently: idiomatic Elixir & Phoenix skills and a
+Fly.io ops skill.
 
 ## Install
 
@@ -21,7 +21,7 @@ Idiomatic Elixir & Phoenix backend skills.
 
 | Skill | What it covers |
 | --- | --- |
-| `elixir-conventions` | The "Good and Bad Elixir" rules — error tuples vs. raising, `with`/`case`, assertive matching, pipelines |
+| `elixir-conventions` | The "Good and Bad Elixir" rules: error tuples vs. raising, `with`/`case`, assertive matching, pipelines |
 | `otp` | GenServer, Supervisor/DynamicSupervisor, Task, Registry, ETS, process lifecycle |
 | `ecto` | Schemas, per-operation changesets, `cast_assoc`/`cast_embed`, `Ecto.Multi`, migrations, N+1/indexes |
 | `phoenix-json-api` | `:api` pipeline, `action_fallback` with no catch-all, a unified error type, pagination, token auth |
@@ -33,10 +33,10 @@ Idiomatic Elixir & Phoenix backend skills.
 | `elixir-testing` | ExUnit, DataCase/ConnCase, the Ecto sandbox, fixtures, assertive tests |
 
 ### `fly`
-Fly.io infrastructure ops — Prometheus/VictoriaLogs queries, `fly ssh`, production Postgres.
+Fly.io infrastructure ops: Prometheus/VictoriaLogs queries, `fly ssh`, production Postgres.
 
 ### `prior-art`
-Before building CI, tooling, infra, or reimplementing functionality — search for existing prior art (in-repo patterns, official/upstream repos, reusable actions, libraries) and mirror it instead of hand-rolling.
+Before building CI, tooling, infra, or reimplementing functionality, search for existing prior art (in-repo patterns, official/upstream repos, reusable actions, libraries) and mirror it instead of hand-rolling.
 
 ## Repository layout
 
@@ -61,7 +61,7 @@ Before building CI, tooling, infra, or reimplementing functionality — search f
 
 ## Local development
 
-Add this repo as a local marketplace and install from it — changes to a skill's
+Add this repo as a local marketplace and install from it. Changes to a skill's
 `SKILL.md` take effect immediately; other changes need `/reload-plugins`:
 
 ```text
@@ -78,9 +78,9 @@ claude plugin validate ./plugins/fly --strict
 
 ## References
 
-- [elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide) — Joseph Morgan (MIT); foundation for the Elixir & Phoenix skills.
+- [elixir-phoenix-guide](https://github.com/j-morgan6/elixir-phoenix-guide): Joseph Morgan (MIT); foundation for the Elixir & Phoenix skills.
 - Chris Keathley, [Good and Bad Elixir](https://keathley.io/blog/good-and-bad-elixir.html) ([source](https://github.com/keathley/keathley.github.io/blob/master/_posts/2021/2021-05-14-good-and-bad-elixir.md)); foundation for `elixir-conventions`.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).

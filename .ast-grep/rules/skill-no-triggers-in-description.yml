@@ -3,8 +3,8 @@ language: yaml
 severity: error
 message: >-
   `description` should state what the skill does, not when to use it. Move
-  usage context and trigger phrasing — "use when…", "when the user…", a
-  "Triggers:" list, or `e.g. "…"` examples — into `when_to_use`. Both fields
+  usage context and trigger phrasing (a "use when…" or "when the user…"
+  lead-in, a "Triggers:" list, or `e.g. "…"` examples) into `when_to_use`. Both fields
   still count toward Claude Code's 1,536-char listing cap, so a `description`
   padded with triggers crowds out the real ones.
 files:

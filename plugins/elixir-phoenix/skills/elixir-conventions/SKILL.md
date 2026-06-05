@@ -3,7 +3,7 @@ name: elixir-conventions
 description: >-
   Idiomatic Elixir conventions for control flow, error handling, and code shape.
 when_to_use: >-
-  Use when writing or reviewing Elixir code and judging whether it's idiomatic — error tuples vs. exceptions, raising and let-it-crash, `with`/`case`/`else` control flow, pattern-matching assertions over defensive checks, pipelines, and module API design.
+  Use when writing or reviewing Elixir code and judging whether it's idiomatic: error tuples vs. exceptions, raising and let-it-crash, `with`/`case`/`else` control flow, pattern-matching assertions over defensive checks, pipelines, and module API design.
 ---
 
 # Elixir conventions
@@ -12,7 +12,7 @@ Recurring patterns that lead to worse code, and the better alternatives.
 
 ## 1. `Map.get/2` and `Keyword.get/2` vs. `Access`
 
-`Map.get/2` and `Keyword.get/2` lock you into one data structure — change the structure later and you have to update every call site. Prefer `Access`:
+`Map.get/2` and `Keyword.get/2` lock you into one data structure. Change the structure later and you have to update every call site. Prefer `Access`:
 
 ```elixir
 # Don't
@@ -25,7 +25,7 @@ opts[:foo]
 
 ## 2. Don't pipe results into the following function
 
-Side-effecting functions return results like `{:ok, term()} | {:error, term()}`. Don't pipe those results into the next function — handle them directly with `case` or `with`.
+Side-effecting functions return results like `{:ok, term()} | {:error, term()}`. Don't pipe those results into the next function. Handle them directly with `case` or `with`.
 
 ```elixir
 # Don't
@@ -45,7 +45,7 @@ def main do
 end
 ```
 
-Piping forces each function to handle the previous one's results, spreading error handling across the calls. Each function ends up knowing too much about how it's called and composed — and it assumes errors can be handled generically, which is often wrong. The calling function is usually the only one with enough information to decide what to do with an error.
+Piping forces each function to handle the previous one's results, spreading error handling across the calls. Each function ends up knowing too much about how it's called and composed, and it assumes errors can be handled generically, which is often wrong. The calling function is usually the only one with enough information to decide what to do with an error.
 
 When errors are a vital part of control flow, keep all the handling in the calling function with `case`:
 
@@ -120,7 +120,7 @@ defp parse_item(item), do: String.to_integer(item)
 defp add_item(num, acc), do: num + acc
 ```
 
-Single-entity functions are reusable across `Stream`, `Enum`, `Task`, and more, instead of being coupled to one call site. Better solutions also tend to reveal themselves — here the named helpers can collapse entirely:
+Single-entity functions are reusable across `Stream`, `Enum`, `Task`, and more, instead of being coupled to one call site. Better solutions also tend to reveal themselves: here the named helpers can collapse entirely:
 
 ```elixir
 def main do
@@ -164,7 +164,7 @@ else
 end
 ```
 
-If you're doing this, the error conditions matter — which means you don't want `with` at all. You want `case`.
+If you're doing this, the error conditions matter, which means you don't want `with` at all. You want `case`.
 
 `with` is best when you can fall through at any point without caring about the specific error. A good way to get there is a common error type:
 
@@ -196,7 +196,7 @@ defp decode(resp) do
 end
 ```
 
-This gives a unified way to surface every error in the app. The struct can render in a Phoenix controller or be returned from an RPC handler — and because it's an exception, the caller can also choose to raise it and get a well-formatted message:
+This gives a unified way to surface every error in the app. The struct can render in a Phoenix controller or be returned from an RPC handler, and because it's an exception, the caller can also choose to raise it and get a well-formatted message:
 
 ```elixir
 case main() do
@@ -224,7 +224,7 @@ The same goes for `case` and `if`. Be explicit about what you expect, and prefer
 Only make callers deal with errors they can actually act on. If an API can error and there's nothing the caller can do about it, raise an exception or throw instead of returning a result tuple.
 
 ```elixir
-# Don't — if the table doesn't exist, catch and return an error tuple
+# Don't: if the table doesn't exist, catch and return an error tuple
 def get(table \\ __MODULE__, id) do
   try do
     :ets.lookup(table, id)
@@ -233,7 +233,7 @@ def get(table \\ __MODULE__, id) do
   end
 end
 
-# Do — there's nothing the caller can do about it, so just throw
+# Do: there's nothing the caller can do about it, so just throw
 def get(table \\ __MODULE__, id) do
   :ets.lookup(table, id)
 end
@@ -277,14 +277,14 @@ for post <- posts, do: assert %Post{} == post
 
 ## Before you finish: run the checks
 
-These belong in CI, but run them locally before declaring code done — don't just eyeball it:
+These belong in CI, but run them locally before declaring code done. Don't just eyeball it:
 
-- `mix format` (or `--check-formatted`) — formatting is not a matter of taste here.
-- `mix compile --warnings-as-errors` — warnings are bugs-in-waiting (unused vars, unreachable clauses, missing `@impl`).
-- `mix credo --strict --format=oneline` — style/consistency and common smells, if the project uses it. **Always pass `--format=oneline`.** Credo's default prints a multi-line block per issue, which bloats the context window for no benefit; one greppable line per issue is all you need to act on.
-  - Iterating on one file? Scope it: `mix credo suggest --format=oneline lib/my_app/foo.ex` (`suggest` is the default, so `mix credo --format=oneline lib/my_app/foo.ex` works too) — far faster than re-scanning the whole tree.
-  - Don't recognize a finding? `mix credo explain lib/my_app/foo.ex:42:7` prints the full rationale with a before/after example — the one place you *want* the detail, so skip `oneline` here. You can also explain a check by name: `mix credo explain Credo.Check.Refactor.Nesting`.
-- `mix dialyzer` — typespec/contract violations, if set up.
-- `mix test` — and add a failing test first for any bug you fix.
+- `mix format` (or `--check-formatted`): formatting is not a matter of taste here.
+- `mix compile --warnings-as-errors`: warnings are bugs-in-waiting (unused vars, unreachable clauses, missing `@impl`).
+- `mix credo --strict --format=oneline`: style/consistency and common smells, if the project uses it. **Always pass `--format=oneline`.** Credo's default prints a multi-line block per issue, which bloats the context window for no benefit; one greppable line per issue is all you need to act on.
+  - Iterating on one file? Scope it: `mix credo suggest --format=oneline lib/my_app/foo.ex` (`suggest` is the default, so `mix credo --format=oneline lib/my_app/foo.ex` works too), far faster than re-scanning the whole tree.
+  - Don't recognize a finding? `mix credo explain lib/my_app/foo.ex:42:7` prints the full rationale with a before/after example, the one place you *want* the detail, so skip `oneline` here. You can also explain a check by name: `mix credo explain Credo.Check.Refactor.Nesting`.
+- `mix dialyzer`: typespec/contract violations, if set up.
+- `mix test`: add a failing test first for any bug you fix.
 
 If a check isn't configured, note it rather than skipping silently.

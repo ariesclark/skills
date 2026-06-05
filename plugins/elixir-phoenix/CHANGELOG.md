@@ -7,13 +7,13 @@ project follows [Semantic Versioning](https://semver.org).
 
 Initial release. Ten idiomatic Elixir & Phoenix skills:
 
-- `elixir-conventions` — error tuples vs. raising, `with`/`case`, assertive matching, pipelines
-- `otp` — GenServer, Supervisor/DynamicSupervisor, Task, Registry, ETS, process lifecycle
-- `ecto` — schemas, per-operation changesets, `cast_assoc`/`cast_embed`, `Ecto.Multi`, migrations, N+1/indexes
-- `phoenix-json-api` — `:api` pipeline, `action_fallback`, unified error type, pagination, token auth
-- `phoenix-authorization` — server-side checks, scope-over-filter (IDOR-proof), policy modules
-- `phoenix-security` — atom exhaustion, SQL injection, XSS, open redirects, password hashing, constant-time comparison
-- `oban` — worker return semantics, idempotency, unique jobs, testing
-- `observability` — structured JSON logging, `:telemetry`, OpenTelemetry, error reporting, metrics
-- `phoenix-deployment` — `runtime.exs` vs compile-time config, release migrations, runtime env, health checks
-- `elixir-testing` — ExUnit, DataCase/ConnCase, the Ecto sandbox, fixtures, assertive tests
+- `elixir-conventions`: error tuples vs. raising, `with`/`case`, assertive matching, pipelines
+- `otp`: GenServer, Supervisor/DynamicSupervisor, Task, Registry, ETS, process lifecycle
+- `ecto`: schemas, per-operation changesets, `cast_assoc`/`cast_embed`, `Ecto.Multi`, migrations, N+1/indexes
+- `phoenix-json-api`: `:api` pipeline, `action_fallback`, unified error type, pagination, token auth
+- `phoenix-authorization`: server-side checks, scope-over-filter (IDOR-proof), policy modules
+- `phoenix-security`: atom exhaustion, SQL injection, XSS, open redirects, password hashing, constant-time comparison
+- `oban`: worker return semantics, idempotency, unique jobs, testing
+- `observability`: structured JSON logging, `:telemetry`, OpenTelemetry, error reporting, metrics
+- `phoenix-deployment`: `runtime.exs` vs compile-time config, release migrations, runtime env, health checks
+- `elixir-testing`: ExUnit, DataCase/ConnCase, the Ecto sandbox, fixtures, assertive tests

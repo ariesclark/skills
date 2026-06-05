@@ -1,9 +1,9 @@
 ---
 name: otp
 description: >-
-  OTP concurrency patterns for Elixir — GenServer, Supervisor/DynamicSupervisor, Task/Task.Supervisor, Agent, Registry, ETS, and process lifecycle.
+  OTP concurrency patterns for Elixir: GenServer, Supervisor/DynamicSupervisor, Task/Task.Supervisor, Agent, Registry, ETS, and process lifecycle.
 when_to_use: >-
-  Use when writing or reviewing stateful processes, supervision trees, or background concurrency — anything touching `GenServer` (`handle_call`/`handle_continue`), `Supervisor`, `Task.async`, `Registry`, or `:ets`, including process-state ownership and let-it-crash design.
+  Use when writing or reviewing stateful processes, supervision trees, or background concurrency: anything touching `GenServer` (`handle_call`/`handle_continue`), `Supervisor`, `Task.async`, `Registry`, or `:ets`, including process-state ownership and let-it-crash design.
 ---
 
 # OTP patterns
@@ -15,9 +15,9 @@ Pairs with `elixir-conventions` (assertive code, let-it-crash). Here: how to str
 2. **`init/1` must be fast and must not block.** Do expensive/bootstrapping work in `handle_continue/2`, not `init/1`.
 3. **`call` for "I need the result/backpressure"; `cast` for fire-and-forget.** Don't `cast` when the caller depends on the outcome.
 4. **One writer per piece of state.** Don't share mutable state across processes; route writes through the owning process (or an ETS table the owner alone writes).
-5. **Name dynamic processes via `Registry`/`:via`,** not global atoms (atoms aren't GC'd — see `phoenix-security`).
+5. **Name dynamic processes via `Registry`/`:via`,** not global atoms (atoms aren't GC'd; see `phoenix-security`).
 6. **Supervise everything that holds state or does work.** A bare `spawn`/unsupervised `Task` that crashes is invisible.
-7. **Let it crash:** don't `try/rescue` around your own logic to keep a process alive — crash and let the supervisor restart from a known-good state.
+7. **Let it crash:** don't `try/rescue` around your own logic to keep a process alive. Crash and let the supervisor restart from a known-good state.
 
 ## GenServer skeleton
 
@@ -25,7 +25,7 @@ Pairs with `elixir-conventions` (assertive code, let-it-crash). Here: how to str
 defmodule Cache do
   use GenServer
 
-  # Public API — callers never touch GenServer directly
+  # Public API: callers never touch GenServer directly
   def start_link(opts), do: GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   def fetch(key), do: GenServer.call(__MODULE__, {:fetch, key})
   def put(key, value), do: GenServer.cast(__MODULE__, {:put, key, value})
@@ -61,8 +61,8 @@ DynamicSupervisor.start_child(MySup, {Worker, id: id})
 
 ## Tasks
 
-- `Task.async/await` for a single concurrent computation you'll join — **always pass a timeout**, and supervise long-lived ones with `Task.Supervisor`.
-- `Task.async_stream/3` for bounded-concurrency fan-out over a collection (`max_concurrency:`, `on_timeout: :kill_task`) — the idiomatic way to parallelize a batch without spawning unboundedly.
+- `Task.async/await` for a single concurrent computation you'll join. **Always pass a timeout**, and supervise long-lived ones with `Task.Supervisor`.
+- `Task.async_stream/3` for bounded-concurrency fan-out over a collection (`max_concurrency:`, `on_timeout: :kill_task`): the idiomatic way to parallelize a batch without spawning unboundedly.
 
 ```elixir
 items
@@ -77,7 +77,7 @@ end)
 
 - Use for read-heavy shared caches. Create the table in the owning process; **only the owner writes.**
 - `read_concurrency: true` for read-mostly tables; `write_concurrency: true` for concurrent writers. `:protected` (default) lets any process read; `:public` only when you truly need outside writers (you usually don't).
-- The table dies with its owner — own it from a supervised process, not a transient task.
+- The table dies with its owner. Own it from a supervised process, not a transient task.
 
 ## Anti-patterns
 - Blocking `init/1` (delays the whole supervision tree booting).

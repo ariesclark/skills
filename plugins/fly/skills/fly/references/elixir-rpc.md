@@ -16,14 +16,14 @@ fly ssh console -a <app> -qC \
   "/app/bin/<app> rpc '<expression>'"
 ```
 
-**Example — print the running app version** (substitute `<otp_app>`, the OTP atom):
+**Example: print the running app version** (substitute `<otp_app>`, the OTP atom):
 
 ```bash
 fly ssh console -a <app> -qC \
   "/app/bin/<app> rpc 'Application.spec(:<otp_app>, :vsn) |> IO.inspect()'"
 ```
 
-**Example — confirm `rpc` not `eval`** (eval would return `:nonode@nohost`):
+**Example: confirm `rpc` not `eval`** (eval would return `:nonode@nohost`):
 
 ```bash
 fly ssh console -a <app> -qC \

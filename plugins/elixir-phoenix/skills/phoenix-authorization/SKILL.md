@@ -1,9 +1,9 @@
 ---
 name: phoenix-authorization
 description: >-
-  Authorization / access control for Phoenix apps — server-side checks, ownership verification, scope-based queries to prevent IDOR, and policy modules.
+  Authorization / access control for Phoenix apps: server-side checks, ownership verification, scope-based queries to prevent IDOR, and policy modules.
 when_to_use: >-
-  Use when writing or reviewing any code that decides whether the current user may see or change a resource — authorization and access control, ownership checks, IDOR-proof scoped queries, and policy modules (`can?`).
+  Use when writing or reviewing any code that decides whether the current user may see or change a resource: authorization and access control, ownership checks, IDOR-proof scoped queries, and policy modules (`can?`).
 ---
 
 # Phoenix authorization
@@ -21,11 +21,11 @@ Authentication answers "who are you"; authorization answers "may you do this". P
 ## Scope, don't fetch-then-check (prevents IDOR)
 
 ```elixir
-# Don't — fetch by id, then check ownership (one slip = IDOR)
+# Don't: fetch by id, then check ownership (one slip = IDOR)
 post = Repo.get!(Post, id)
 if post.user_id == user.id, do: ..., else: {:error, :unauthorized}
 
-# Do — scope the query to the user; other users' rows simply don't exist
+# Do: scope the query to the user; other users' rows simply don't exist
 def fetch_post(%User{id: uid}, id) do
   case Repo.get_by(Post, id: id, user_id: uid) do
     nil  -> {:error, :not_found}
@@ -54,13 +54,13 @@ else
 end
 ```
 
-Keep policy functions total and assertive — match the allowed cases, let the final clause deny.
+Keep policy functions total and assertive: match the allowed cases, let the final clause deny.
 
 ## Controllers / plugs
 - A `require_authenticated` plug assigns the current identity and halts with `{:error, :unauthorized}` if absent.
-- Per-resource authorization happens in the context (via scope) or an explicit policy check in the action — not only in a plug, which can't see the specific resource.
+- Per-resource authorization happens in the context (via scope) or an explicit policy check in the action, not only in a plug, which can't see the specific resource.
 
 ## Common mistakes
 - Authorizing in a plug by route but not re-checking the specific record the action loads.
-- Returning `403` where existence itself is sensitive — prefer `404`.
+- Returning `403` where existence itself is sensitive; prefer `404`.
 - Role checks sprinkled in templates/serializers instead of gating the data access.
