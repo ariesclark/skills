@@ -1,0 +1,15 @@
+id: skill-no-trigger-labels
+language: yaml
+severity: error
+message: >-
+  Drop the literal "Triggers:" / "Trigger phrases" label from `when_to_use` —
+  weave the keywords into a natural sentence instead. A plain prose description
+  of when the skill applies matches just as well as a stuffed keyword list, and
+  reads like the rest of the catalog.
+files:
+  - "**/SKILL.md"
+rule:
+  pattern: "when_to_use: $W"
+constraints:
+  W:
+    regex: '(?i)(triggers?:|trigger phrases?)'

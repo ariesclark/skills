@@ -2,13 +2,15 @@ id: skill-no-triggers-in-description
 language: yaml
 severity: error
 message: >-
-  Trigger words belong in `when_to_use`, not `description`. Move the "Triggers:"
-  list into a `when_to_use:` field so `description` stays a tight statement of
-  what the skill does (both still count toward the 1,536-char listing cap).
+  `description` should state what the skill does, not when to use it. Move
+  usage context and trigger phrasing — "use when…", "when the user…", a
+  "Triggers:" list, or `e.g. "…"` examples — into `when_to_use`. Both fields
+  still count toward Claude Code's 1,536-char listing cap, so a `description`
+  padded with triggers crowds out the real ones.
 files:
   - "**/SKILL.md"
 rule:
   pattern: "description: $D"
 constraints:
   D:
-    regex: "[Tt]riggers?:"
+    regex: '(?i)(triggers?:|trigger phrases?|\buse (this |the )?(skill )?(when|whenever|if)\b|\bwhen the user\b|e\.g\.\s*")'

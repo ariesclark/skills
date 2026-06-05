@@ -1,0 +1,15 @@
+id: skill-too-long
+language: yaml
+severity: error
+message: >-
+  SKILL.md exceeds 8,000 characters. The whole body loads into context every
+  time the skill triggers, so keep it lean. Apply progressive disclosure: leave
+  the core workflow and a digest of rules in SKILL.md, and move long worked
+  examples, deep-dive patterns, and reference tables into `references/*.md` that
+  the body points to and Claude loads only when needed.
+files:
+  - "**/SKILL.md"
+rule:
+  all:
+    - kind: stream
+    - regex: "[\\s\\S]{8000,}"
