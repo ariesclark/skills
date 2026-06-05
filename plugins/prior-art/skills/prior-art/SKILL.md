@@ -20,7 +20,7 @@ Most "new" infrastructure isn't new. CI pipelines, release workflows, linters, s
 
 ## Where to look
 - **In-repo / org first.** Existing workflows, `Makefile`/`justfile`, config files, sibling packages. `grep`/`find` for the pattern and match the conventions already in use.
-- **Official / upstream.** The tool or platform's own repo and docs often ship a reference workflow or a reusable action. For example, a Claude Code plugin marketplace mirrors `anthropics/claude-plugins-official`, which delegates plugin validation to a *pinned reusable action* rather than hand-rolling the steps.
+- **Official / upstream.** The tool or platform's own repo and docs often ship a reference workflow or a reusable action. A plugin marketplace, for instance, can mirror its ecosystem's official starter repo and delegate plugin validation to a *pinned reusable action* rather than hand-rolling the steps.
 - **Ecosystem.** `awesome-*` lists, the package registry, `starter`/`template` repos, and the relevant action/extension marketplace.
 
 ## What to evaluate before adopting

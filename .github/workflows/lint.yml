@@ -14,13 +14,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-
-      # Lint SKILL.md frontmatter by running ast-grep ourselves rather than
-      # through a third-party action: install the (native) CLI and run the rules
-      # in .ast-grep/rules via sgconfig.yml. They cap the description (≤1024) and
-      # when_to_use (≤512) lengths so the combined text stays under Claude Code's
-      # 1,536-char listing cap. `ast-grep scan` exits non-zero on violations.
-      - name: Install ast-grep
-        run: npm install -g @ast-grep/cli@0.43.0
-      - name: Lint SKILL.md frontmatter
-        run: ast-grep scan
+      - run: npm install -g @ast-grep/cli@0.43.0
+      - run: ast-grep scan

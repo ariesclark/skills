@@ -6,7 +6,7 @@ message: >-
   time the skill triggers, so keep it lean. Apply progressive disclosure: leave
   the core workflow and a digest of rules in SKILL.md, and move long worked
   examples, deep-dive patterns, and reference tables into `references/*.md` that
-  the body points to and Claude loads only when needed.
+  the body points to and the agent loads only when needed.
 files:
   - "**/SKILL.md"
 rule:

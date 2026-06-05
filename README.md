@@ -1,6 +1,6 @@
-# ariesclark Claude Code skills
+# ariesclark agent skills
 
-A Claude Code marketplace catalog of skills, organized as domain plugins you
+A marketplace catalog of agent skills, organized as domain plugins you
 install independently. Currently: idiomatic Elixir & Phoenix skills and a
 Fly.io ops skill.
 

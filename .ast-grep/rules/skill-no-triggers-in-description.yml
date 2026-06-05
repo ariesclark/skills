@@ -4,9 +4,9 @@ severity: error
 message: >-
   `description` should state what the skill does, not when to use it. Move
   usage context and trigger phrasing (a "use when…" or "when the user…"
-  lead-in, a "Triggers:" list, or `e.g. "…"` examples) into `when_to_use`. Both fields
-  still count toward Claude Code's 1,536-char listing cap, so a `description`
-  padded with triggers crowds out the real ones.
+  lead-in, a "Triggers:" list, or `e.g. "…"` examples) into `when_to_use`. A
+  `description` padded with triggers crowds out the real ones and risks being
+  truncated in the listing.
 files:
   - "**/SKILL.md"
 rule:
