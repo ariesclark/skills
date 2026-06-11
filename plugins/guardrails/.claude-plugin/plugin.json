@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "guardrails",
+  "displayName": "Guardrails",
+  "version": "0.2.0",
+  "description": "Rule-based PreToolUse hooks that block noisy Bash habits: decorative banners, status narration, and shelling out past dedicated tools.",
+  "author": {
+    "name": "Aries Clark",
+    "email": "me@ariesclark.com",
+    "url": "https://github.com/ariesclark"
+  },
+  "homepage": "https://github.com/ariesclark/skills",
+  "repository": "https://github.com/ariesclark/skills",
+  "license": "MIT",
+  "keywords": ["hooks", "pre-tool-use", "bash", "rules"],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(echo *)",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
+          },
+          {
+            "type": "command",
+            "if": "Bash(grep *)",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
+          },
+          {
+            "type": "command",
+            "if": "Bash(sed *)",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
+          },
+          {
+            "type": "command",
+            "if": "Bash(find *)",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
+          },
+          {
+            "type": "command",
+            "if": "Bash(cat *)",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
+          },
+          {
+            "type": "command",
+            "if": "Bash(head *)",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
+          },
+          {
+            "type": "command",
+            "if": "Bash(tail *)",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

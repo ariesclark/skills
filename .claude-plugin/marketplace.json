@@ -8,16 +8,34 @@
   },
   "plugins": [
     {
+      "name": "core",
+      "source": "./plugins/core",
+      "category": "library",
+      "description": "Shared library for the other plugins in this marketplace: hook verdict emitters and URL helpers. Nothing to install — consumers symlink the scripts."
+    },
+    {
       "name": "elixir-phoenix",
       "source": "./plugins/elixir-phoenix",
       "category": "language",
-      "description": "Idiomatic Elixir & Phoenix skills: conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing."
+      "description": "Idiomatic Elixir & Phoenix skills: conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, testing, and Credo checks."
     },
     {
       "name": "fly",
       "source": "./plugins/fly",
       "category": "infrastructure",
       "description": "Operate Fly.io infrastructure: hosted Prometheus & VictoriaLogs queries, SSH into live machines, and production database access."
+    },
+    {
+      "name": "guardrails",
+      "source": "./plugins/guardrails",
+      "category": "workflow",
+      "description": "Rule-based PreToolUse hooks that block noisy Bash habits: decorative banners, status narration, and shelling out past dedicated tools."
+    },
+    {
+      "name": "github",
+      "source": "./plugins/github",
+      "category": "workflow",
+      "description": "Redirect GitHub page fetches (WebFetch, curl, wget) to a local shallow clone or gh, instead of lossy page summaries."
     },
     {
       "name": "prior-art",

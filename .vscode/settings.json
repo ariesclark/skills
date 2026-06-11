@@ -1,6 +1,7 @@
 {
   "cSpell.words": [
     "anthropics",
+    "ariesclark",
     "changeset",
     "changesets",
     "Dockerfiles",
@@ -8,6 +9,7 @@
     "frontmatter",
     "GenServer",
     "justfile",
+    "mktemp",
     "Oban",
     "OpenTelemetry",
     "pinnable",
@@ -18,6 +20,8 @@
     "stdlib",
     "Terraform",
     "unpinnable",
-    "VictoriaLogs"
+    "userinfo",
+    "VictoriaLogs",
+    "webfetch"
   ]
 }

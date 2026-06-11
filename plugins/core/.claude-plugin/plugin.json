@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "core",
+  "displayName": "Core",
+  "version": "0.1.0",
+  "description": "Shared library for the other plugins in this marketplace: hook verdict emitters (deny/warn) and URL helpers, with colocated bats tests. Nothing to install — consumers symlink the scripts and ship dereferenced copies.",
+  "author": {
+    "name": "Aries Clark",
+    "email": "me@ariesclark.com",
+    "url": "https://github.com/ariesclark"
+  },
+  "homepage": "https://github.com/ariesclark/skills",
+  "repository": "https://github.com/ariesclark/skills",
+  "license": "MIT",
+  "keywords": ["library", "hooks", "verdict", "url", "bats"]
+}
