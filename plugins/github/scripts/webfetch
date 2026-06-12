@@ -2,13 +2,13 @@
 
 directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-source "$directory/core/mktemp"
 source "$directory/core/url"
 source "$directory/core/verdict"
 
 input=$(cat)
 url=$(jq -r '.tool_input.url // empty' <<< "$input")
 session_id=$(jq -r '.session_id // empty' <<< "$input")
+export session_id
 
 parse_url url "$url"
 
@@ -19,14 +19,7 @@ command -v gh > /dev/null \
 	|| warn 'Install the GitHub CLI (https://cli.github.com), which is required for this plugin.'
 
 gh_subcommands() {
-	local cache="${XDG_CACHE_HOME:-$HOME/.cache}/claude/github/subcommands-${1:-gh}"
-
-	if [[ ! -s "$cache" || "$(command -v gh)" -nt "$cache" ]]; then
-		mkdir -p "${cache%/*}"
-		gh "$@" x 2>&1 | sed -n '/Available commands:/,$ s/^  //p' > "$cache"
-	fi
-
-	cat "$cache"
+	gh "$@" x 2>&1 | sed -n '/Available commands:/,$ s/^  //p'
 }
 
 case "$url_host$url_pathname" in
@@ -64,18 +57,19 @@ case "$url_host$url_pathname" in
 				"Then \`gh gist view <gist_id>\`, or fetch the gist's own URL to receive a clone."
 
 		gist_id=${BASH_REMATCH[1]}
-		destination=$(session_mktemp "github-gist-$gist_id") || exit 1
 
-		if ! gh gist clone "$gist_id" "$destination" -- -q 2> /dev/null; then
-			rm -rf "$destination"
+		if destination=$(bash "$directory/clone-temporarily" "$gist_id" 2>&1); then
 			deny \
-				"gist $gist_id could not be cloned (private, nonexistent, or inaccessible)." \
+				"A clone of gist $gist_id was provided for you, explore it directly." \
+				"The gist is cloned at $destination. The clone is removed when the session ends; delete it now if you don't need it."
+		elif [[ $? -eq 2 ]]; then
+			deny \
+				"$destination." \
 				"Use \`gh gist view $gist_id\` instead; check \`gh auth status\` if the gist should be accessible."
 		fi
 
-		deny \
-			"A clone of gist $gist_id was provided for you, explore it directly." \
-			"The gist is cloned at $destination. The clone is removed when the session ends; delete it now if you don't need it."
+		echo "$destination" >&2
+		exit 1
 		;;
 
 	github.com/* | www.github.com/* | raw.githubusercontent.com/* | api.github.com/repos/*)
@@ -161,18 +155,18 @@ case "$url_host$url_pathname" in
 					;;
 			esac
 
-		destination=$(session_mktemp "github-${repository//\//-}") || exit 1
-
-		if ! gh repo clone "$repository" "$destination" -- --filter=blob:none -q 2> /dev/null; then
-			rm -rf "$destination"
+		if destination=$(bash "$directory/clone-temporarily" "$repository" 2>&1); then
 			deny \
-				"$repository could not be cloned (private, nonexistent, or inaccessible)." \
+				"A clone of $repository was provided for you, explore it directly." \
+				"The repository is cloned at $destination with full history; read a file at a ref with \`git show <ref>:<path>\`. For PRs, issues, and metadata use \`gh <command>\`. The clone is removed when the session ends; delete it now if you don't need it."
+		elif [[ $? -eq 2 ]]; then
+			deny \
+				"$destination." \
 				"Use \`gh api\` or \`gh repo view $repository\` instead; check \`gh auth status\` if the repository should be accessible."
 		fi
 
-		deny \
-			"A clone of $repository was provided for you, explore it directly." \
-			"The repository is cloned at $destination with full history; read a file at a ref with \`git show <ref>:<path>\`. For PRs, issues, and metadata use \`gh <command>\`. The clone is removed when the session ends; delete it now if you don't need it."
+		echo "$destination" >&2
+		exit 1
 		;;
 
 	api.github.com/*)
