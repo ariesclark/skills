@@ -172,7 +172,7 @@ case "$url_host$url_pathname" in
 
 		deny \
 			"A clone of $repository was provided for you, explore it directly." \
-			"The repository is cloned at $destination. For PRs, issues, and metadata use \`gh <command>\`. The clone is removed when the session ends; delete it now if you don't need it."
+			"The repository is cloned at $destination with full history; read a file at a ref with \`git show <ref>:<path>\`. For PRs, issues, and metadata use \`gh <command>\`. The clone is removed when the session ends; delete it now if you don't need it."
 		;;
 
 	api.github.com/*)
