@@ -7,6 +7,7 @@
 	[[ "$output" == *"gh pr view"* ]]
 	[[ "$output" == *"git show <ref>:<path>"* ]]
 	[[ "$output" == *"gh search"* ]]
+	[[ "$output" == *"bash $BATS_TEST_DIRNAME/clone-temporarily <owner>/<repo>"* ]]
 }
 
 @test "stays short enough to load every session" {

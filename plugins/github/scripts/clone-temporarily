@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+source "$directory/core/mktemp"
+
+repository=${1:?usage: clone-temporarily <owner>/<repo>}
+repository=${repository#http://}
+repository=${repository#https://}
+repository=${repository#github.com/}
+repository=${repository%.git}
+
+session_id=${CLAUDE_CODE_SESSION_ID:-}
+destination=$(session_mktemp "github-${repository//\//-}") || exit 1
+
+if ! gh repo clone "$repository" "$destination" -- --filter=blob:none -q 2> /dev/null; then
+	rm -rf "$destination"
+	echo "$repository could not be cloned (private, nonexistent, or inaccessible)" >&2
+	exit 1
+fi
+
+printf '%s\n' "$destination"

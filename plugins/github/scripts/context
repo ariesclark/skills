@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
-cat << 'EOF'
+directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+context=$(cat << 'EOF'
 Hooks deny these calls: `WebFetch` of any github.com URL, `curl https://github.com/...` (and wget), `gh api repos/<owner>/<repo>/contents/...` reads.
-- Prefer a clone over fetching repository files: read the clone directly, `git show <ref>:<path>` for a file at a ref.
+- Prefer a clone over fetching repository files: `bash {directory}/clone-temporarily <owner>/<repo>` prints the path of a clone that is removed when the session ends; read it directly, `git show <ref>:<path>` for a file at a ref.
 - Prefer `gh pr view <n> --repo <owner>/<repo> --comments` and `gh pr diff <n>` over fetching the PR page; likewise `gh issue view <n> --comments`, `gh release view <tag>`, `gh run view <id> --log-failed`.
 - Prefer `gh search <code|issues|prs|repos> <query>` over fetching github.com/search.
 - Prefer `gh api <path>` over fetching api.github.com (anonymous: 60 requests/hour).
 EOF
+)
+
+printf '%s\n' "${context//'{directory}'/$directory}"
