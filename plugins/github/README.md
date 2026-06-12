@@ -18,6 +18,10 @@ better, by URL shape:
 - Content subdomains (`docs.github.com`, `avatars.githubusercontent.com`,
   …) pass through untouched.
 
+A SessionStart hook injects a short cheat sheet of these redirects (under
+1 KB) so the model reaches for the right `gh` command before a deny has
+to teach it.
+
 Clones are named `<session_id>-github-<target>-XXXXXX` under `$TMPDIR` and
 a SessionEnd hook removes the session's clones when it ends.
 
