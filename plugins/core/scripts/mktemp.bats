@@ -14,11 +14,31 @@ setup() {
 }
 
 @test "session_mktemp: fails without a session" {
+	unset CLAUDE_CODE_SESSION_ID
 	session_id=""
 	run session_mktemp example
 
 	[ "$status" -eq 1 ]
 	[[ "$output" == *"session_id is empty"* ]]
+}
+
+@test "session_mktemp: falls back to CLAUDE_CODE_SESSION_ID" {
+	CLAUDE_CODE_SESSION_ID=session-bats
+	session_id=""
+	directory=$(session_mktemp example)
+
+	[ -d "$directory" ]
+	[[ "$directory" == "${TMPDIR:-/tmp}/sessionbats-example-"* ]]
+	rm -r "$directory"
+}
+
+@test "session_mktemp: the session_id global wins over the environment" {
+	CLAUDE_CODE_SESSION_ID=session-other
+	session_id=session-bats
+	directory=$(session_mktemp example)
+
+	[[ "$directory" == "${TMPDIR:-/tmp}/sessionbats-example-"* ]]
+	rm -r "$directory"
 }
 
 @test "session_cleanup: removes the session's directories" {

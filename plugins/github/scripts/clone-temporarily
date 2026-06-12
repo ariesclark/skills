@@ -10,7 +10,6 @@ repository=${repository#https://}
 repository=${repository#github.com/}
 repository=${repository%.git}
 
-session_id=${CLAUDE_CODE_SESSION_ID:-}
 destination=$(session_mktemp "github-${repository//\//-}") || exit 1
 
 if ! gh repo clone "$repository" "$destination" -- --filter=blob:none -q 2> /dev/null; then

@@ -209,7 +209,7 @@ load test-helper
 }
 
 @test "cloning without a session id fails loudly" {
-	run hook '{"tool_input":{"url":"https://github.com/yarlson/lnk"}}'
+	run bash -c "printf '%s' '{\"tool_input\":{\"url\":\"https://github.com/yarlson/lnk\"}}' | env -u CLAUDE_CODE_SESSION_ID bash '$BATS_TEST_DIRNAME/webfetch'"
 	[ "$status" -eq 1 ]
 	[[ "$output" == *"session_id is empty"* ]]
 }

@@ -11,8 +11,9 @@ install on its own.
   (seen by the model but not the user).
 - `mktemp` — session-scoped temporary directories named
   `<session_id>-<template>-XXXXXX` under `$TMPDIR`, reading the
-  `session_id` global (dashes stripped, so the id never collides with the
-  separators). `session_mktemp <template>` creates one, failing when
+  `session_id` global with `$CLAUDE_CODE_SESSION_ID` as the fallback, so
+  hooks set the global from their input and plain scripts need nothing
+  (dashes stripped, so the id never collides with the separators). `session_mktemp <template>` creates one, failing when
   `session_id` is empty; `session_cleanup <prefix>` (from a SessionEnd
   hook) removes the session's directories whose template starts with the
   prefix.

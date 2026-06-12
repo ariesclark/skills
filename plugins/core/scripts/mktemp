@@ -1,6 +1,8 @@
 session_mktemp() {
-	if [[ -z "${session_id:-}" ]]; then
-		echo 'session_mktemp: session_id is empty; expected one in the hook input' >&2
+	local session_id=${session_id:-${CLAUDE_CODE_SESSION_ID:-}}
+
+	if [[ -z "$session_id" ]]; then
+		echo 'session_mktemp: session_id is empty; expected a session_id global or CLAUDE_CODE_SESSION_ID in the environment' >&2
 		return 1
 	fi
 
