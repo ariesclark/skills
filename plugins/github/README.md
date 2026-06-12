@@ -1,6 +1,7 @@
 # GitHub
 
-A PreToolUse hook that stops lossy GitHub page fetches and hands back
+A pair of PreToolUse hooks that stop lossy GitHub page fetches, whether
+through WebFetch or a `curl`/`wget` in a Bash command, and hand back
 something better, by URL shape:
 
 - Repository, raw-file, and wiki URLs are cloned into a fresh temporary
@@ -19,7 +20,10 @@ Clones are named `<session_id>-github-<target>-XXXXXX` under `$TMPDIR` and
 a SessionEnd hook removes the session's clones when it ends.
 
 Requires `gh` (authenticated), `git`, and `jq`. Without `gh` the fetch
-goes through, with a note suggesting the GitHub CLI be installed.
+goes through, with a note suggesting the GitHub CLI be installed. The
+Bash hook finds curl/wget URLs by parsing the command with
+[`shfmt`](https://github.com/mvdan/sh) (`--to-json`); without `shfmt`
+it lets every command through.
 
 ## Install
 

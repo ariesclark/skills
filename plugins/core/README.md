@@ -23,6 +23,13 @@ install on its own.
   `parse_search_params <array> <string>` fills a declared associative
   array with decoded parameters from a query string, when a consumer
   actually needs them; `url_decode` reverses query-string encoding.
+- `shell.jq` — a jq module (loaded with `jq -L <this directory>` and
+  `include "shell";`) for walking `shfmt --to-json` syntax trees:
+  `word_text` rebuilds an argument word from its literal parts only, so
+  variable expansions contribute nothing; `strip_wrappers` drops leading
+  wrapper commands (`sudo`, `env`, …) and `VAR=value` assignments from a
+  word array, leaving the real command first.
+
 Consumer plugins symlink this directory (for example
 `plugins/github/scripts/core → ../../core/scripts`). Plugin installation
 dereferences symlinks, so installed plugins ship their own copies and never

@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "github",
   "displayName": "GitHub",
-  "version": "0.2.0",
-  "description": "Redirect GitHub page fetches to a local shallow clone or gh, instead of lossy page summaries.",
+  "version": "0.3.0",
+  "description": "Redirect GitHub page fetches (WebFetch, curl, wget) to a local shallow clone or gh, instead of lossy page summaries.",
   "author": {
     "name": "Aries Clark",
     "email": "me@ariesclark.com",
@@ -13,7 +13,7 @@
   "repository": "https://github.com/ariesclark/skills",
   "license": "MIT",
   "dependencies": [],
-  "keywords": ["github", "gh", "webfetch", "clone", "hooks", "pre-tool-use"],
+  "keywords": ["github", "gh", "webfetch", "curl", "wget", "clone", "hooks", "pre-tool-use"],
   "hooks": {
     "PreToolUse": [
       {
@@ -22,6 +22,15 @@
           {
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/webfetch"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash"
           }
         ]
       }
