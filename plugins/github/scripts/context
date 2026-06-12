@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
 cat << 'EOF'
-GitHub content: skip page fetches (WebFetch, curl, gh api contents reads); hooks deny them. Go straight to:
-- Repository files, wikis, gists: clone, then read; `git show <ref>:<path>` for a file at a ref.
-- PRs: `gh pr view <n> --repo <owner>/<repo> --comments`, `gh pr diff <n>` for changes.
-- Issues: `gh issue view <n> --comments`. Discussions: `gh discussion view <n>`.
-- Releases: `gh release view <tag>`, assets via `gh release download <tag>`.
-- CI runs: `gh run view <id> --log-failed`. Search: `gh search <code|commits|issues|prs|repos> <query>`.
-- Other API reads: `gh api <path>` (authenticated; anonymous fetches are capped at 60/hour).
+Hooks deny these calls: `WebFetch` of any github.com URL, `curl https://github.com/...` (and wget), `gh api repos/<owner>/<repo>/contents/...` reads.
+- Prefer a clone over fetching repository files: read the clone directly, `git show <ref>:<path>` for a file at a ref.
+- Prefer `gh pr view <n> --repo <owner>/<repo> --comments` and `gh pr diff <n>` over fetching the PR page; likewise `gh issue view <n> --comments`, `gh release view <tag>`, `gh run view <id> --log-failed`.
+- Prefer `gh search <code|issues|prs|repos> <query>` over fetching github.com/search.
+- Prefer `gh api <path>` over fetching api.github.com (anonymous: 60 requests/hour).
 EOF
