@@ -3,7 +3,7 @@
   "name": "github",
   "displayName": "GitHub",
   "version": "0.2.0",
-  "description": "Redirect GitHub page fetches (WebFetch, curl, wget) to a local shallow clone or gh, instead of lossy page summaries.",
+  "description": "Redirect GitHub page fetches to a local shallow clone or gh, instead of lossy page summaries.",
   "author": {
     "name": "Aries Clark",
     "email": "me@ariesclark.com",
@@ -21,22 +21,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/webfetch.sh"
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/webfetch"
           }
         ]
-      },
+      }
+    ],
+    "SessionEnd": [
       {
-        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(curl *)",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
-          },
-          {
-            "type": "command",
-            "if": "Bash(wget *)",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup"
           }
         ]
       }

@@ -1,0 +1,181 @@
+#!/usr/bin/env bash
+
+directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+source "$directory/core/mktemp"
+source "$directory/core/url"
+source "$directory/core/verdict"
+
+input=$(cat)
+url=$(jq -r '.tool_input.url // empty' <<< "$input")
+session_id=$(jq -r '.session_id // empty' <<< "$input")
+
+parse_url url "$url"
+
+host_is "$url_host" github.com githubusercontent.com \
+	|| exit 0
+
+command -v gh > /dev/null \
+	|| warn 'Install the GitHub CLI (https://cli.github.com), which is required for this plugin.'
+
+gh_subcommands() {
+	gh "$@" x 2>&1 | sed -n '/Available commands:/,$ s/^  //p'
+}
+
+case "$url_host$url_pathname" in
+	github.com/search* | www.github.com/search* | api.github.com/search/*)
+		# github.com/search?q={query}&type={type}
+		# api.github.com/search/{type}?q={query}
+		declare -A search_params
+		parse_search_params search_params "$url_search"
+
+		type=${search_params[type]:-}
+		[[ "$url_host" == api.github.com ]] && type=${url_segments[1]:-}
+
+		case "$type" in
+			repositories | "") type=repos ;;
+			pullrequests) type=prs ;;
+		esac
+
+		types=$(gh_subcommands search)
+		grep -qxF "$type" <<< "$types" \
+			|| deny "Use \`gh search <${types//$'\n'/|}> ${search_params[q]:-<query>}\` instead."
+
+		deny "Use \`gh search $type ${search_params[q]:-<query>}\` instead."
+		;;
+
+	gist.github.com* | gist.githubusercontent.com/* | api.github.com/gists*)
+		# gist.github.com/{username}/{gist_id}
+		# gist.githubusercontent.com/{username}/{gist_id}/raw/...
+		# api.github.com/gists/{gist_id}
+		[[ "$url_pathname" =~ ^/[^/]+/([^/]+) ]] \
+			||
+			# gist.github.com/{gist_id}
+			[[ "$url_host" == gist.github.com && "$url_pathname" =~ ^/([^/]+)/?$ ]] \
+			|| deny \
+				"Use \`gh gist list\` instead." \
+				"Then \`gh gist view <gist_id>\`, or fetch the gist's own URL to receive a clone."
+
+		gist_id=${BASH_REMATCH[1]}
+		destination=$(session_mktemp "github-gist-$gist_id") || exit 1
+
+		if ! gh gist clone "$gist_id" "$destination" -- -q 2> /dev/null; then
+			rm -rf "$destination"
+			deny \
+				"gist $gist_id could not be cloned (private, nonexistent, or inaccessible)." \
+				"Use \`gh gist view $gist_id\` instead; check \`gh auth status\` if the gist should be accessible."
+		fi
+
+		deny \
+			"A clone of gist $gist_id was provided for you, explore it directly." \
+			"The gist is cloned at $destination. The clone is removed when the session ends; delete it now if you don't need it."
+		;;
+
+	github.com/* | www.github.com/* | raw.githubusercontent.com/* | api.github.com/repos/*)
+		# github.com/{owner}/{repo}/...
+		# raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}
+		# api.github.com/repos/{owner}/{repo}/...
+		[[ "$url_host" == api.github.com ]] && url_segments=("${url_segments[@]:1}")
+		[[ -n "${url_segments[1]:-}" ]] \
+			|| deny \
+				'Clone the repository and read the files directly.' \
+				'For PRs, issues, and metadata use `gh` (`gh api`, `gh pr view`, `gh issue view`).'
+
+		repository="${url_segments[0]}/${url_segments[1]%.git}"
+
+		[[ "$url_host" == raw.githubusercontent.com ]] \
+			|| case "${url_segments[2]:-}" in
+				pull | pulls)
+					# github.com/{owner}/{repo}/pull/{number}
+					# api.github.com/repos/{owner}/{repo}/pulls/{number}
+					[[ "${url_segments[3]:-}" == +([0-9]) ]] \
+						&& deny \
+							"Use \`gh pr view ${url_segments[3]} --repo $repository --comments\` instead." \
+							"Use \`gh pr diff ${url_segments[3]} --repo $repository\` for the changes."
+
+					deny \
+						"Use \`gh pr list --repo $repository\` instead." \
+						"Then \`gh pr view <number> --comments\` or \`gh pr diff <number>\`."
+					;;
+
+				issues)
+					# github.com/{owner}/{repo}/issues/{number}
+					[[ "${url_segments[3]:-}" == +([0-9]) ]] \
+						&& deny "Use \`gh issue view ${url_segments[3]} --repo $repository --comments\` instead."
+
+					deny \
+						"Use \`gh issue list --repo $repository\` instead." \
+						"Then \`gh issue view <number> --comments\`."
+					;;
+
+				releases)
+					# github.com/{owner}/{repo}/releases/tag/{tag}
+					# github.com/{owner}/{repo}/releases/download/{tag}/{asset}
+					[[ "${url_segments[3]:-}" == @(tag|tags|download) && -n "${url_segments[4]:-}" ]] \
+						&& deny \
+							"Use \`gh release view ${url_segments[4]} --repo $repository\` instead." \
+							"Use \`gh release download ${url_segments[4]} --repo $repository\` for its assets."
+
+					# github.com/{owner}/{repo}/releases/latest
+					[[ "${url_segments[3]:-}" == latest ]] \
+						&& deny \
+							"Use \`gh release view --repo $repository\` instead." \
+							'Without a tag, gh release view shows the latest release.'
+
+					deny \
+						"Use \`gh release list --repo $repository\` instead." \
+						"Then \`gh release view <tag> --repo $repository\` for details or \`gh release download <tag> --repo $repository\` for assets."
+					;;
+
+				actions)
+					# github.com/{owner}/{repo}/actions/runs/{run_id}
+					[[ "${url_segments[3]:-}" == runs && "${url_segments[4]:-}" == +([0-9]) ]] \
+						&& deny \
+							"Use \`gh run view ${url_segments[4]} --repo $repository\` instead." \
+							"Pass \`--log-failed\` for the failing steps' logs."
+
+					deny \
+						"Use \`gh run list --repo $repository\` instead." \
+						"Then \`gh run view <id> --log\` for logs."
+					;;
+
+				wiki)
+					repository+=".wiki"
+					;;
+
+				discussions)
+					# github.com/{owner}/{repo}/discussions/{number}
+					[[ "${url_segments[3]:-}" == +([0-9]) ]] \
+						&& deny "Use \`gh discussion view ${url_segments[3]} --repo $repository\` instead."
+
+					deny \
+						"Use \`gh discussion list --repo $repository\` instead." \
+						"Then \`gh discussion view <number>\`."
+					;;
+			esac
+
+		destination=$(session_mktemp "github-${repository//\//-}") || exit 1
+
+		if ! gh repo clone "$repository" "$destination" -- --filter=blob:none -q 2> /dev/null; then
+			rm -rf "$destination"
+			deny \
+				"$repository could not be cloned (private, nonexistent, or inaccessible)." \
+				"Use \`gh api\` or \`gh repo view $repository\` instead; check \`gh auth status\` if the repository should be accessible."
+		fi
+
+		deny \
+			"A clone of $repository was provided for you, explore it directly." \
+			"The repository is cloned at $destination. For PRs, issues, and metadata use \`gh <command>\`. The clone is removed when the session ends; delete it now if you don't need it."
+		;;
+
+	api.github.com/*)
+		subcommands=$(gh_subcommands | grep -vx api)
+		deny \
+			'WebFetch reaches the GitHub API anonymously: 60 requests an hour, public data only. The gh CLI is signed in as you and has neither limit.' \
+			"Pick one of \`gh <${subcommands//$'\n'/|}>\`, with \`gh <subcommand> --help\` for usage. If none fits, \`gh api ${url_pathname#/}${url_search:+?$url_search}\`."
+		;;
+
+	*)
+		exit 0
+		;;
+esac

@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 setup() {
-	source "$BATS_TEST_DIRNAME/verdict.sh"
+	source "$BATS_TEST_DIRNAME/verdict"
 }
 
 @test "deny: emits hook JSON and exits zero" {
@@ -9,6 +9,17 @@ setup() {
 	[ "$status" -eq 0 ]
 	[[ "$output" == *'"permissionDecision": "deny"'* || "$output" == *'"permissionDecision":"deny"'* ]]
 	[[ "$output" == *"nope"* ]]
+}
+
+@test "deny: includes additionalContext when given" {
+	run deny "nope" "the path is /tmp/x"
+	[[ "$output" == *'additionalContext'* ]]
+	[[ "$output" == *'/tmp/x'* ]]
+}
+
+@test "deny: omits additionalContext without one" {
+	run deny "nope"
+	[[ "$output" != *'additionalContext'* ]]
 }
 
 @test "warn: emits additionalContext" {

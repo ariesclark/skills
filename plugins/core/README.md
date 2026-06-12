@@ -5,12 +5,24 @@ install on its own.
 
 `scripts/` holds the sources with colocated bats tests:
 
-- `verdict.sh` — `deny`/`warn` emit a PreToolUse hook verdict as JSON and
-  exit; an optional `verdict_prefix` is prepended to every message.
-- `url.sh` — `url_host`, `url_path`, `url_host_is`, `url_segment`: URL
-  parsing that survives ports, userinfo, mixed case, query strings, and
-  lookalike hosts.
-
+- `verdict` — `deny`/`warn` emit a PreToolUse hook verdict as JSON and
+  exit; an optional `verdict_prefix` is prepended to every message, and
+  `deny` takes an optional second argument emitted as `additionalContext`
+  (seen by the model but not the user).
+- `mktemp` — session-scoped temporary directories named
+  `<session_id>-<template>-XXXXXX` under `$TMPDIR`, reading the
+  `session_id` global (dashes stripped, so the id never collides with the
+  separators). `session_mktemp <template>` creates one, failing when
+  `session_id` is empty; `session_cleanup <prefix>` (from a SessionEnd
+  hook) removes the session's directories whose template starts with the
+  prefix.
+- `url` — `parse_url <name> <url>` explodes a URL into `<name>_host`,
+  `<name>_pathname`, `<name>_search`, and a `<name>_segments` array,
+  surviving ports, userinfo, and mixed case; `host_is <host>
+  <domain...>` matches exactly or by subdomain, rejecting lookalikes;
+  `parse_search_params <array> <string>` fills a declared associative
+  array with decoded parameters from a query string, when a consumer
+  actually needs them; `url_decode` reverses query-string encoding.
 Consumer plugins symlink this directory (for example
 `plugins/github/scripts/core → ../../core/scripts`). Plugin installation
 dereferences symlinks, so installed plugins ship their own copies and never

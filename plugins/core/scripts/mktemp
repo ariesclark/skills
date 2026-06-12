@@ -1,0 +1,13 @@
+session_mktemp() {
+	if [[ -z "${session_id:-}" ]]; then
+		echo 'session_mktemp: session_id is empty; expected one in the hook input' >&2
+		return 1
+	fi
+
+	mktemp -dt "${session_id//-/}-$1-XXXXXX"
+}
+
+session_cleanup() {
+	[[ -n "${session_id:-}" ]] || return 0
+	rm -rf "${TMPDIR:-/tmp}/${session_id//-/}-$1"-*
+}

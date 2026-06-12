@@ -35,7 +35,7 @@
       "name": "github",
       "source": "./plugins/github",
       "category": "workflow",
-      "description": "Redirect GitHub page fetches (WebFetch, curl, wget) to a local shallow clone or gh, instead of lossy page summaries."
+      "description": "Redirect GitHub page fetches to a local shallow clone or gh, instead of lossy page summaries."
     },
     {
       "name": "prior-art",

@@ -1,0 +1,57 @@
+parse_url() {
+	local rest=${2#*://} host pathname search
+	local -n __segments=${1}_segments
+
+	host=${rest%%[/?#]*}
+	host=${host##*@}
+	host=${host%%:*}
+	host=${host,,}
+
+	rest=${rest%%#*}
+	search=""
+	[[ "$rest" == *\?* ]] && search=${rest#*\?}
+
+	rest=${rest%%\?*}
+	pathname=""
+	[[ "$rest" == */* ]] && pathname="/${rest#*/}"
+
+	declare -g "${1}_host=$host" "${1}_pathname=$pathname" "${1}_search=$search"
+
+	declare -ga "${1}_segments"
+	IFS=/ read -r -a __segments <<< "${pathname#/}"
+}
+
+parse_search_params() {
+	local -n __search_params=$1
+	local -a parameters
+	local parameter key value
+
+	__search_params=()
+	[[ -n "$2" ]] || return 0
+
+	IFS='&' read -r -a parameters <<< "$2"
+	for parameter in "${parameters[@]}"; do
+		key=${parameter%%=*}
+		[[ "$key" =~ ^[A-Za-z0-9_.~%+-]+$ ]] || continue
+
+		value=""
+		[[ "$parameter" == *=* ]] && value=${parameter#*=}
+		__search_params[$key]=$(url_decode "$value")
+	done
+}
+
+url_decode() {
+	local text=${1//+/ }
+	text=${text//\\/\\\\}
+	printf '%b' "${text//%/\\x}"
+}
+
+host_is() {
+	local host=$1 domain
+	shift
+
+	for domain in "$@"; do
+		[[ "$host" == "$domain" || "$host" == *".$domain" ]] && return 0
+	done
+	return 1
+}

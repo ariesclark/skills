@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$directory/core/mktemp"
+
+session_id=$(jq -r '.session_id // empty')
+session_cleanup github
