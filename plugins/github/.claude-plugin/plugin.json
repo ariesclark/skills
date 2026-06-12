@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "github",
   "displayName": "GitHub",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Redirect GitHub page fetches (WebFetch, curl, wget) to a local shallow clone or gh, instead of lossy page summaries.",
   "author": {
     "name": "Aries Clark",

@@ -21,7 +21,8 @@ better, by URL shape:
 A SessionStart hook injects a short cheat sheet of these redirects (under
 1 KB) so the model reaches for the right `gh` command before a deny has
 to teach it, including `scripts/clone-temporarily <owner>/<repo>`, which
-makes the same session-scoped clone on demand and prints its path.
+makes the same session-scoped clone on demand (an `<owner>/<repo>` path
+or a gist id) and prints its path.
 
 Clones are named `<session_id>-github-<target>-XXXXXX` under `$TMPDIR` and
 a SessionEnd hook removes the session's clones when it ends.
