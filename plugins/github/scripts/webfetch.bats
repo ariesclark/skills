@@ -152,6 +152,24 @@ load test-helper
 	[[ "$output" == *'gh search <code|commits|issues|prs|repos> foo'* ]]
 }
 
+@test "gh subcommand discovery is cached and reused" {
+	cache_home=$(mktemp -d)
+	search_hook() {
+		XDG_CACHE_HOME="$cache_home" bash "$BATS_TEST_DIRNAME/webfetch" \
+			<<< '{"tool_input":{"url":"https://github.com/search?q=x&type=wikis"}}'
+	}
+
+	run search_hook
+	[[ "$output" == *'gh search <code|commits|issues|prs|repos> x'* ]]
+	[ -s "$cache_home/claude/github/subcommands-search" ]
+
+	printf 'bogus\n' > "$cache_home/claude/github/subcommands-search"
+	run search_hook
+	rm -r "$cache_home"
+
+	[[ "$output" == *'gh search <bogus> x'* ]]
+}
+
 @test "discussions deny with gh discussion redirects" {
 	run hook '{"tool_input":{"url":"https://github.com/anthropics/claude-code/discussions/123"}}'
 	[[ "$output" == *'gh discussion view 123 --repo anthropics/claude-code'* ]]

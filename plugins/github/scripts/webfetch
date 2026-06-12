@@ -19,7 +19,14 @@ command -v gh > /dev/null \
 	|| warn 'Install the GitHub CLI (https://cli.github.com), which is required for this plugin.'
 
 gh_subcommands() {
-	gh "$@" x 2>&1 | sed -n '/Available commands:/,$ s/^  //p'
+	local cache="${XDG_CACHE_HOME:-$HOME/.cache}/claude/github/subcommands-${1:-gh}"
+
+	if [[ ! -s "$cache" || "$(command -v gh)" -nt "$cache" ]]; then
+		mkdir -p "${cache%/*}"
+		gh "$@" x 2>&1 | sed -n '/Available commands:/,$ s/^  //p' > "$cache"
+	fi
+
+	cat "$cache"
 }
 
 case "$url_host$url_pathname" in
