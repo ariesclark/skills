@@ -72,6 +72,36 @@ teardown() {
 	[ -z "$output" ]
 }
 
+@test "gh api contents reads delegate to a clone" {
+	run hook '{"session_id":"session-bats","tool_input":{"command":"gh api repos/yarlson/lnk/contents/README.md"}}'
+	[[ "$output" == *"A clone of yarlson/lnk was provided"* ]]
+
+	run hook '{"session_id":"session-bats","tool_input":{"command":"gh api /repos/yarlson/lnk/contents?ref=main"}}'
+	[[ "$output" == *"A clone of yarlson/lnk was provided"* ]]
+
+	run hook '{"session_id":"session-bats","tool_input":{"command":"gh api https://api.github.com/repos/yarlson/lnk/contents/README.md"}}'
+	[[ "$output" == *"A clone of yarlson/lnk was provided"* ]]
+}
+
+@test "other gh api paths pass through" {
+	run hook '{"tool_input":{"command":"gh api repos/yarlson/lnk"}}'
+	[ -z "$output" ]
+
+	run hook '{"tool_input":{"command":"gh api user"}}'
+	[ -z "$output" ]
+
+	run hook '{"tool_input":{"command":"gh api repos/x/y/contents-of-something"}}'
+	[ -z "$output" ]
+}
+
+@test "gh api contents writes pass through" {
+	run hook '{"tool_input":{"command":"gh api -X PUT repos/yarlson/lnk/contents/new.md -f message=add -f content=aGk="}}'
+	[ -z "$output" ]
+
+	run hook '{"tool_input":{"command":"gh api repos/yarlson/lnk/contents/new.md --method DELETE -f message=rm"}}'
+	[ -z "$output" ]
+}
+
 @test "cloning without a session id fails loudly" {
 	run hook '{"tool_input":{"command":"curl https://github.com/yarlson/lnk"}}'
 	[ "$status" -eq 1 ]

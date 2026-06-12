@@ -1,8 +1,10 @@
 # GitHub
 
 A pair of PreToolUse hooks that stop lossy GitHub page fetches, whether
-through WebFetch or a `curl`/`wget` in a Bash command, and hand back
-something better, by URL shape:
+through WebFetch, a `curl`/`wget` in a Bash command, or a `gh api`
+read of a `repos/<owner>/<repo>/contents` path (base64 JSON when a
+clone reads better; writes pass through), and hand back something
+better, by URL shape:
 
 - Repository, raw-file, and wiki URLs are cloned into a fresh temporary
   directory (via `gh`, so private repositories work; `--filter=blob:none`,
