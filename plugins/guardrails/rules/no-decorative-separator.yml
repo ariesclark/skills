@@ -1,0 +1,43 @@
+id: no-decorative-separator
+language: bash
+severity: error
+message: "Drop this decorative separator — banners and divider lines are noise."
+note: "A run of three or more repeated separator characters is decoration, not output. Even wrapping a real value it adds nothing; let the command's own output stand."
+rule:
+  kind: command
+  all:
+    - has: { field: name, regex: "^(echo|printf)$" }
+    - has:
+        stopBy: end
+        any:
+          - { kind: string_content, regex: "[-=*]{3,}" }
+          - { kind: raw_string, regex: "[-=*]{3,}" }
+valid:
+  - echo "$VAR"
+  - echo hello
+  - 'echo "result: $code"'
+  - printf hello
+  - 'printf "%s\n" "$line"'
+  - 'printf "%-20s" "$name"'
+  - 'printf "Done: %d\n" "$count"'
+  - ls -la
+  - "git log --oneline -5"
+  - 'echo "a-b-c"'
+  - |
+    for f in *.log; do
+      printf "%s\n" "$f"
+    done
+invalid:
+  - 'printf "===== %s =====\n" "$f"'
+  - "printf '===== %s =====\\n' \"$f\""
+  - 'echo "=== step ==="'
+  - 'echo "---"'
+  - 'echo "***"'
+  - 'echo "----------"'
+  - 'printf "%s\n=====\n" "$header"'
+  - 'echo "--- $file ---"'
+  - |
+    for f in *.yml; do
+      printf "===== %s =====\n" "$f"
+      cat "$f"
+    done

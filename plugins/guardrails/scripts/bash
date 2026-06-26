@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+rules="$(cd "$directory/.." && pwd)/rules"
+
+source "$directory/core/rule"
+
+command=$(jq -r '.tool_input.command // empty')
+[[ -n "$command" ]] || exit 0
+
+# Each rule file is gated by a CLAUDE_PLUGIN_OPTION_bash_<name> toggle derived
+# from its filename (stacking.yml -> bash_stacking, shelling-out.yml -> bash_shelling_out),
+# on unless explicitly set to false. Adding a rule needs no change here.
+files=()
+for rule in "$rules"/*.yml; do
+	name=$(basename "$rule" .yml)
+	option="CLAUDE_PLUGIN_OPTION_bash_${name//-/_}"
+	[[ "${!option:-true}" != false ]] && files+=("$rule")
+done
+[[ ${#files[@]} -gt 0 ]] || exit 0
+
+printf '%s' "$command" | apply_rules "${files[@]}"
+
+exit 0

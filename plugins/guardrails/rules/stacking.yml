@@ -1,0 +1,63 @@
+id: stacking
+language: bash
+severity: warning
+message: "Run these as separate parallel Bash tool calls, or chain with && if one depends on the previous."
+note: "Commands joined with ; run serially in one call; separate tool calls run in parallel."
+rule:
+  kind: program
+  all:
+    # an actual top-level ; separator (not newlines, not a ; nested in a loop/if)
+    - has: { regex: "^;$" }
+    # and a second non-setup command among the top-level statements
+    - has:
+        kind: command
+        nthChild:
+          position: n+2
+          ofRule:
+            kind: command
+            not:
+              {
+                has:
+                  {
+                    field: name,
+                    regex: "^(set|cd|source|\\.|trap|shopt|umask|ulimit|pushd|popd)$",
+                  },
+              }
+valid:
+  - ls -la
+  - "set -euo pipefail; make"
+  - "cd src; ls"
+  - "mkdir x && cd x"
+  - "foo | bar"
+  - "a && b"
+  - "export X=1; make"
+  - 'for f in *.txt; do mv "$f" "$f.bak"; done'
+  - "if [ -f .env ]; then source .env; fi"
+  - |
+    git add -A
+    git commit -m wip
+    git push
+  - |
+    set -euo pipefail
+    cd app
+    npm ci
+    npm run build
+  - |
+    for dir in */; do
+      make -C "$dir"
+    done
+invalid:
+  - "make build; ls -la"
+  - "a; b; c"
+  - "ls; pwd"
+  - "echo hi; ls"
+  - "make; test; deploy"
+  - "foo; bar"
+  - "build; run; clean"
+  - "ls -la; whoami"
+  - "one; two; three"
+  - "cat a; grep b"
+  - |
+    cd app
+    make; test
+  - "lint; build; ship"

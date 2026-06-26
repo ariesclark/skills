@@ -1,0 +1,41 @@
+id: no-backgrounding
+language: bash
+severity: error
+message: "Use the Bash tool run_in_background parameter instead of `&`, or separate parallel tool calls."
+note: "& detaches the process from the harness, losing its output and exit status."
+rule:
+  kind: program
+  has: { regex: "^&$", stopBy: end }
+valid:
+  - ls -la
+  - "a && b"
+  - "a; b"
+  - "foo | bar"
+  - "a || b"
+  - make build
+  - grep x file
+  - "cmd1 && cmd2 || cmd3"
+  - 'echo "a & b"'
+  - |
+    git add -A
+    git commit -m wip
+  - |
+    for f in *.txt; do
+      process "$f"
+    done
+invalid:
+  - sleep 10 &
+  - "a & b"
+  - make &
+  - server start &
+  - npm run dev &
+  - ./script.sh &
+  - "foo & bar & wait"
+  - python app.py &
+  - node server &
+  - |
+    npm run dev &
+    npm test
+  - |
+    cd app
+    ./serve.sh &

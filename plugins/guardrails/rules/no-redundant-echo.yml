@@ -1,0 +1,65 @@
+id: no-redundant-echo
+language: bash
+severity: error
+message: "Run `$INNER` instead."
+note: "A command substitution already writes to stdout, so echoing it is redundant."
+rule:
+  kind: command
+  all:
+    - has: { field: name, regex: "^echo$" }
+    # the substitution must be the sole argument (no label/extra args)
+    - not: { has: { nthChild: 3 } }
+    - has:
+        field: argument
+        nthChild: 2
+        any:
+          - kind: command_substitution
+          - all:
+              - kind: string
+              - has: { kind: command_substitution }
+              - not: { has: { kind: string_content } }
+    - has: { kind: command_substitution, pattern: $SUB, stopBy: end }
+constraints:
+  # ignore empty substitutions like $() or `` (no command to run)
+  SUB: { regex: "\\w" }
+transform:
+  # strip the $( ) or backtick wrapper to show the command itself
+  INNER:
+    replace:
+      source: $SUB
+      replace: "^\\$\\(|^`|\\)$|`$"
+      by: ""
+valid:
+  - echo "$VAR"
+  - echo $HOME
+  - 'echo "${count}"'
+  - 'echo "result: $(date)"'
+  - 'echo "files: $(ls)"'
+  - 'echo "$USER is here"'
+  - echo hello
+  - ls -la
+  - date
+  - printf "$(date)"
+  - echo $(date) and counting
+  - echo prefix $(hostname)
+  - echo $()
+  - |
+    out=$(make build)
+    echo "$out"
+invalid:
+  - echo $(date)
+  - echo `hostname`
+  - 'echo "$(date)"'
+  - echo $(git rev-parse HEAD)
+  - echo `pwd`
+  - 'echo "$(ls)"'
+  - echo $(whoami)
+  - echo `date +%s`
+  - 'echo "$(ls | wc -l)"'
+  - echo $(uname -a)
+  - |
+    cd "$repo"
+    echo $(git rev-parse HEAD)
+  - |
+    branch=main
+    echo `git rev-parse "$branch"`

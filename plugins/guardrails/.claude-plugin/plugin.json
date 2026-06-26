@@ -1,60 +1,61 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "guardrails",
-  "displayName": "Guardrails",
-  "version": "0.2.0",
-  "description": "Rule-based PreToolUse hooks that block noisy Bash habits: decorative banners, status narration, and shelling out past dedicated tools.",
-  "author": {
-    "name": "Aries Clark",
-    "email": "me@ariesclark.com",
-    "url": "https://github.com/ariesclark"
-  },
-  "homepage": "https://github.com/ariesclark/skills",
-  "repository": "https://github.com/ariesclark/skills",
-  "license": "MIT",
-  "keywords": ["hooks", "pre-tool-use", "bash", "rules"],
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "if": "Bash(echo *)",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
-          },
-          {
-            "type": "command",
-            "if": "Bash(grep *)",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
-          },
-          {
-            "type": "command",
-            "if": "Bash(sed *)",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
-          },
-          {
-            "type": "command",
-            "if": "Bash(find *)",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
-          },
-          {
-            "type": "command",
-            "if": "Bash(cat *)",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
-          },
-          {
-            "type": "command",
-            "if": "Bash(head *)",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
-          },
-          {
-            "type": "command",
-            "if": "Bash(tail *)",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash.sh"
-          }
-        ]
-      }
-    ]
-  }
+	"$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+	"name": "guardrails",
+	"displayName": "Guardrails",
+	"version": "0.2.0",
+	"description": "Rule-based PreToolUse hooks that block noisy Bash habits: static echoes, shelling out past dedicated tools, stacked commands, and backgrounding.",
+	"author": {
+		"name": "Aries Clark",
+		"email": "me@ariesclark.com",
+		"url": "https://github.com/ariesclark"
+	},
+	"homepage": "https://github.com/ariesclark/skills",
+	"repository": "https://github.com/ariesclark/skills",
+	"license": "MIT",
+	"keywords": ["hooks", "pre-tool-use", "bash", "rules"],
+	"userConfig": {
+		"bash_no_static_echo": {
+			"type": "boolean",
+			"title": "Block static echo",
+			"description": "Deny echo of static text (banners, status words, labels); echo of dynamic input like $VAR or $(cmd) is allowed.",
+			"default": true
+		},
+		"bash_no_redundant_echo": {
+			"type": "boolean",
+			"title": "Block redundant echo",
+			"description": "Deny echoing a command's output (echo $(cmd) or echo `cmd`); run the command directly instead.",
+			"default": true
+		},
+		"bash_no_backgrounding": {
+			"type": "boolean",
+			"title": "Block backgrounding",
+			"description": "Deny commands backgrounded with & instead of the run_in_background parameter.",
+			"default": true
+		},
+		"bash_shelling_out": {
+			"type": "boolean",
+			"title": "Prefer dedicated tools",
+			"description": "Warn when a command shells out to grep, sed, find, cat, head, or tail.",
+			"default": true
+		},
+		"bash_stacking": {
+			"type": "boolean",
+			"title": "Warn on stacked commands",
+			"description": "Warn when independent commands are joined with ; instead of running as parallel tool calls.",
+			"default": true
+		}
+	},
+	"hooks": {
+		"PreToolUse": [
+			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash"
+					}
+				]
+			}
+		]
+	}
 }

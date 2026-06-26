@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 hook() {
-	printf '%s' "$1" | bash "$BATS_TEST_DIRNAME/bash.sh"
+	printf '%s' "$1" | bash "$BATS_TEST_DIRNAME/bash"
 }
 
 @test "denies a banner echo" {
@@ -12,13 +12,29 @@ hook() {
 
 @test "denies a divider echo" {
 	run hook '{"tool_input":{"command":"echo \"---\""}}'
-	[[ "$output" == *"decorative divider"* ]]
+	[[ "$output" == *"decorative separator"* ]]
 }
 
-@test "warns on status narration" {
+@test "denies a printf banner wrapping a dynamic value" {
+	run hook '{"tool_input":{"command":"printf \"===== %s =====\\n\" \"$f\""}}'
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+	[[ "$output" == *"decorative separator"* ]]
+}
+
+@test "denies a static status echo" {
 	run hook '{"tool_input":{"command":"make build && echo done"}}'
-	[[ "$output" == *"additionalContext"* ]]
-	[[ "$output" == *"status word"* ]]
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+}
+
+@test "allows an echo of dynamic input" {
+	run hook '{"tool_input":{"command":"echo \"$PWD\""}}'
+	[ -z "$output" ]
+}
+
+@test "denies echoing command output" {
+	run hook '{"tool_input":{"command":"echo `hostname`"}}'
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+	[[ "$output" == *"already writes to stdout"* ]]
 }
 
 @test "warns on shelling out to grep" {
@@ -32,13 +48,92 @@ hook() {
 	[[ "$output" == *"dedicated tool"* ]]
 }
 
+@test "warns when a leading tool feeds a pipe" {
+	run hook '{"tool_input":{"command":"cat file | grep foo"}}'
+	[[ "$output" == *"dedicated tool"* ]]
+}
+
+@test "silent on a tool used as a downstream pipe stage" {
+	run hook '{"tool_input":{"command":"foo | cat bar"}}'
+	[ -z "$output" ]
+}
+
+@test "silent on a filter at the end of a pipe" {
+	run hook '{"tool_input":{"command":"ls | head -5"}}'
+	[ -z "$output" ]
+}
+
+@test "wrapped commands pass through (tree-sitter does not peel sudo)" {
+	run hook '{"tool_input":{"command":"sudo grep foo /etc/hosts"}}'
+	[ -z "$output" ]
+}
+
+@test "warns on commands stacked with a semicolon" {
+	run hook '{"tool_input":{"command":"make build; ls -la"}}'
+	[[ "$output" == *"additionalContext"* ]]
+	[[ "$output" == *"parallel"* ]]
+}
+
+@test "does not warn on a setup statement before a command" {
+	run hook '{"tool_input":{"command":"set -euo pipefail; make"}}'
+	[ -z "$output" ]
+}
+
+@test "does not warn on cd before a command" {
+	run hook '{"tool_input":{"command":"cd src; ls"}}'
+	[ -z "$output" ]
+}
+
+@test "does not treat && as stacking" {
+	run hook '{"tool_input":{"command":"mkdir x && cd x"}}'
+	[ -z "$output" ]
+}
+
+@test "does not treat a multi-line script as stacking" {
+	run hook '{"tool_input":{"command":"git add -A\ngit commit -m wip\ngit push"}}'
+	[ -z "$output" ]
+}
+
+@test "allows cat reading a heredoc" {
+	run hook '{"tool_input":{"command":"cat <<EOF > out.txt\nkey=value\nEOF"}}'
+	[ -z "$output" ]
+}
+
+@test "denies a backgrounded command" {
+	run hook '{"tool_input":{"command":"sleep 10 &"}}'
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+	[[ "$output" == *"run_in_background"* ]]
+}
+
+@test "backgrounding blocks even with multiple commands" {
+	run hook '{"tool_input":{"command":"make & test & wait"}}'
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+}
+
+@test "disabled rules stay silent" {
+	CLAUDE_PLUGIN_OPTION_bash_no_static_echo=false run hook '{"tool_input":{"command":"echo done"}}'
+	[ -z "$output" ]
+
+	CLAUDE_PLUGIN_OPTION_bash_no_decorative_separator=false run hook '{"tool_input":{"command":"printf \"===== %s =====\\n\" \"$f\""}}'
+	[ -z "$output" ]
+
+	CLAUDE_PLUGIN_OPTION_bash_shelling_out=false run hook '{"tool_input":{"command":"grep -r foo ."}}'
+	[ -z "$output" ]
+
+	CLAUDE_PLUGIN_OPTION_bash_stacking=false run hook '{"tool_input":{"command":"make build; ls -la"}}'
+	[ -z "$output" ]
+
+	CLAUDE_PLUGIN_OPTION_bash_no_backgrounding=false run hook '{"tool_input":{"command":"sleep 10 &"}}'
+	[ -z "$output" ]
+}
+
 @test "silent on a clean command" {
 	run hook '{"tool_input":{"command":"ls -la"}}'
 	[ -z "$output" ]
 }
 
-@test "silent on a plain labelled echo" {
-	run hook '{"tool_input":{"command":"echo before && diff a b"}}'
+@test "silent on a dynamic echo in a chain" {
+	run hook '{"tool_input":{"command":"echo \"$rev\" && diff a b"}}'
 	[ -z "$output" ]
 }
 

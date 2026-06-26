@@ -1,0 +1,54 @@
+id: shelling-out
+language: bash
+severity: warning
+message: "Use a dedicated tool instead of `$TOOL`: Read a file, Grep contents, Glob filenames, Edit changes."
+note: "Dedicated tools are faster and scoped to the task. Keep the shell only when it genuinely needs a pipeline."
+rule:
+  kind: command
+  has: { field: name, pattern: $TOOL, regex: "^(grep|sed|find|cat|head|tail)$" }
+  not:
+    any:
+      # a downstream stage of a pipe (filtering another stage's output)
+      - all:
+          - inside: { kind: pipeline, stopBy: end }
+          - follows:
+              stopBy: end
+              any:
+                - { kind: command }
+                - { kind: redirected_statement }
+      # reads a heredoc rather than a file (no Read equivalent)
+      - inside:
+          kind: redirected_statement
+          has: { kind: heredoc_redirect }
+          stopBy: end
+valid:
+  - ls -la
+  - pwd
+  - "ps aux | grep nginx"
+  - "ls | head -20"
+  - "git log | tail -5"
+  - "make 2>&1 | grep -i error"
+  - find_files .
+  - cat_dog x
+  - |
+    cat <<EOF > config.txt
+    key=value
+    EOF
+  - |
+    ps aux | grep node
+    df -h | tail -5
+invalid:
+  - grep -r foo .
+  - sed -i s/a/b/ file
+  - find . -name "*.js"
+  - cat file.txt
+  - head -5 log.txt
+  - tail -f app.log
+  - "cat file | grep foo"
+  - "ls && grep x file"
+  - "grep a b; grep c d"
+  - sed -n "1,5p" file
+  - cat one two three
+  - |
+    cd src
+    grep -rn TODO .

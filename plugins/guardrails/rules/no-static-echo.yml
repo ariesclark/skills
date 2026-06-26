@@ -1,0 +1,53 @@
+id: no-static-echo
+language: bash
+severity: error
+message: "Drop this echo, or echo only dynamic input like variables or command substitutions."
+note: "Echoing static text is noise — a clean exit implies success and failures print their own errors."
+rule:
+  kind: command
+  all:
+    - has: { field: name, regex: "^echo$" }
+    - not:
+        has:
+          stopBy: end
+          any:
+            - { kind: simple_expansion }
+            - { kind: expansion }
+            - { kind: command_substitution }
+            - { kind: arithmetic_expansion }
+valid:
+  - echo "$VAR"
+  - echo $HOME
+  - 'echo "${count}"'
+  - 'echo "result: $code"'
+  - 'echo "$((1 + 1))"'
+  - 'echo "files: $(ls | wc -l)"'
+  - 'echo "$USER is done"'
+  - 'echo "${arr[@]}"'
+  - ls -la
+  - printf hello
+  - |
+    result=$(make build)
+    echo "$result"
+  - |
+    for f in *.log; do
+      echo "$f"
+    done
+invalid:
+  - echo hello
+  - echo done
+  - 'echo "=== step ==="'
+  - 'echo "---"'
+  - 'echo "Build finished"'
+  - echo ok
+  - 'echo "1.0.0"'
+  - 'echo "hello world"'
+  - 'echo "***"'
+  - echo
+  - |
+    set -euo pipefail
+    echo "Deploying to prod"
+    kubectl apply -f manifest.yaml
+  - |
+    make build
+    echo "build complete"
