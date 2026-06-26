@@ -1,0 +1,45 @@
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/hook"
+
+# Concatenate ast-grep rule files into one multi-document --inline-rules string.
+rule_inline() {
+	awk 'FNR == 1 && NR > 1 { print "---" } { print }' "$@"
+}
+
+# Pick the most-severe match from a JSON match array, as
+# "<severity><tab><message><tab><note>" (the rule's note, or empty).
+# Ties on severity break by ruleId so overlapping rules resolve deterministically.
+rule_pick() {
+	jq -r '
+		sort_by([{error: 0, warning: 1, info: 2, hint: 3}[.severity] // 9, .ruleId])[0]
+		| [.severity, .message, .note // ""]
+		| @tsv
+	' <<< "$1"
+}
+
+# Scan code (read from stdin) against the given rule files; print matches as JSON.
+rule_scan() {
+	command -v ast-grep > /dev/null || return 1
+	local rules
+	rules=$(rule_inline "$@") || return 1
+	# ast-grep exits non-zero when an error-severity rule matches; the JSON on
+	# stdout is what we want, so do not let that exit code propagate.
+	ast-grep scan --inline-rules "$rules" --stdin --json=compact 2> /dev/null
+	return 0
+}
+
+# Scan code (read from stdin) against the rule files and emit a PreToolUse
+# verdict for the most-severe match: error denies, anything else warns.
+apply_rules() {
+	local matches severity message note
+	matches=$(rule_scan "$@") || return 0
+	[[ -n "$matches" && "$matches" != "[]" ]] || return 0
+
+	IFS=$'\t' read -r severity message note < <(rule_pick "$matches")
+	if [[ "$severity" == error ]]; then
+		deny "$message" "$note"
+	elif [[ -n "$note" ]]; then
+		warn "$message"$'\n\n'"$note"
+	else
+		warn "$message"
+	fi
+}

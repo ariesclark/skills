@@ -1,0 +1,13 @@
+hook_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+deny() {
+	jq -n -L "$hook_directory" --arg reason "$1" --arg context "${2:-}" \
+		'include "hook"; deny($reason; $context)'
+	exit 0
+}
+
+warn() {
+	jq -n -L "$hook_directory" --arg context "$1" \
+		'include "hook"; warn($context)'
+	exit 0
+}
