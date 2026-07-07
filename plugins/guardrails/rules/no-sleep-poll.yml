@@ -1,0 +1,39 @@
+id: no-sleep-poll
+language: bash
+severity: error
+message: >-
+  Try again without the `sleep` loop; it blocks the whole turn. Start the work
+  with the Bash tool's `run_in_background`, then wait for it with the `Monitor` tool.
+note: |-
+  Don't poll with a `sleep` loop; it blocks the whole turn while you wait.
+  Run the work with `run_in_background` and watch it with `Monitor` tool instead.
+
+  Common gotchas (blocked):
+  - waiting on a process: `while pgrep -f build; do sleep 1; done`
+  - waiting on a file: `until [ -f out ]; do sleep 2; done`
+rule:
+  kind: command
+  all:
+    - has: { field: name, regex: "^sleep$" }
+    - inside:
+        stopBy: end
+        any:
+          - { kind: while_statement }
+          - { kind: for_statement }
+          - { kind: c_style_for_statement }
+valid:
+  - sleep 5
+  - make build
+  - 'for f in *.log; do process "$f"; done'
+  - |
+    while read -r line; do
+      handle "$line"
+    done
+invalid:
+  - "while pgrep -f oha >/dev/null; do sleep 1; done"
+  - 'until [ -x "$HOME/.cargo/bin/oha" ]; do sleep 5; done'
+  - "for i in 1 2 3; do sleep 1; done"
+  - |
+    while ! curl -sf localhost:8080/health; do
+      sleep 2
+    done

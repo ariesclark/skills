@@ -5,15 +5,22 @@ rule_inline() {
 	awk 'FNR == 1 && NR > 1 { print "---" } { print }' "$@"
 }
 
-# Pick the most-severe match from a JSON match array, as
-# "<severity><tab><message><tab><note>" (the rule's note, or empty).
-# Ties on severity break by ruleId so overlapping rules resolve deterministically.
-rule_pick() {
+# Render every distinct rule that matched as one text block, most-severe first.
+# One entry per ruleId (a rule that matches twice is still one instruction),
+# each its message followed by its note. Ties on severity break by ruleId so
+# overlapping rules order deterministically.
+rule_render() {
 	jq -r '
-		sort_by([{error: 0, warning: 1, info: 2, hint: 3}[.severity] // 9, .ruleId])[0]
-		| [.severity, .message, .note // ""]
-		| @tsv
+		unique_by(.ruleId)
+		| sort_by([{error: 0, warning: 1, info: 2, hint: 3}[.severity] // 9, .ruleId])
+		| map(.message + (if (.note // "") == "" then "" else "\n" + .note end))
+		| join("\n\n")
 	' <<< "$1"
+}
+
+# True when any match is error severity (an error denies; warnings only warn).
+rule_has_error() {
+	jq -e 'any(.[]; .severity == "error")' <<< "$1" > /dev/null
 }
 
 # Scan code (read from stdin) against the given rule files; print matches as JSON.
@@ -27,19 +34,40 @@ rule_scan() {
 	return 0
 }
 
-# Scan code (read from stdin) against the rule files and emit a PreToolUse
-# verdict for the most-severe match: error denies, anything else warns.
+# Scan code (read from stdin) against the rule files and emit a single PreToolUse
+# verdict covering every rule that matched, so the agent can fix them all at once
+# instead of discovering them one resubmission at a time. Any error denies;
+# otherwise the combined warnings are surfaced as context.
 apply_rules() {
-	local matches severity message note
+	local matches text
 	matches=$(rule_scan "$@") || return 0
 	[[ -n "$matches" && "$matches" != "[]" ]] || return 0
 
-	IFS=$'\t' read -r severity message note < <(rule_pick "$matches")
-	if [[ "$severity" == error ]]; then
-		deny "$message" "$note"
-	elif [[ -n "$note" ]]; then
-		warn "$message"$'\n\n'"$note"
+	text=$(rule_render "$matches")
+	if rule_has_error "$matches"; then
+		deny "$text"
 	else
-		warn "$message"
+		warn "$text"
 	fi
+}
+
+# Print the note from every rule file in a directory, blank-line separated. The
+# notes double as standalone guidance, so a SessionStart hook can prime the agent
+# with the same rules the PreToolUse hook enforces. Needs yq; no-op without it.
+rule_notes() {
+	command -v yq > /dev/null || return 1
+
+	# mikefarah yq prints raw scalars; the python (kislyuk) yq emits JSON unless -r.
+	local flags=()
+	yq --version 2>&1 | grep -qi mikefarah || flags=(-r)
+
+	local rule id note separator=
+	for rule in "$1"/*.yml; do
+		[[ -e "$rule" ]] || continue
+		note=$(yq "${flags[@]}" '.note' "$rule" 2> /dev/null) || continue
+		[[ -n "$note" && "$note" != null ]] || continue
+		id=$(yq "${flags[@]}" '.id' "$rule" 2> /dev/null)
+		printf '%s## %s\n%s\n' "$separator" "$id" "$note"
+		separator=$'\n'
+	done
 }

@@ -1,16 +1,27 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "elixir-phoenix",
-  "displayName": "Elixir & Phoenix Skills",
-  "version": "0.1.0",
-  "description": "Idiomatic Elixir & Phoenix skills: conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing.",
-  "author": {
-    "name": "Aries Clark",
-    "email": "me@ariesclark.com",
-    "url": "https://github.com/ariesclark"
-  },
-  "homepage": "https://github.com/ariesclark/skills",
-  "repository": "https://github.com/ariesclark/skills",
-  "license": "MIT",
-  "keywords": ["elixir", "phoenix", "ecto", "oban", "otp", "best-practices", "skills"]
+	"$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+	"name": "elixir-phoenix",
+	"displayName": "Elixir & Phoenix Skills",
+	"version": "0.2.0",
+	"description": "Idiomatic Elixir & Phoenix skills: conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, and testing.",
+	"author": {
+		"name": "Aries Clark",
+		"email": "me@ariesclark.com",
+		"url": "https://github.com/ariesclark"
+	},
+	"homepage": "https://github.com/ariesclark/skills",
+	"repository": "https://github.com/ariesclark/skills",
+	"license": "MIT",
+	"keywords": [
+		"elixir",
+		"phoenix",
+		"ecto",
+		"oban",
+		"otp",
+		"best-practices",
+		"code-smells",
+		"anti-patterns",
+		"credo",
+		"skills"
+	]
 }

@@ -1,60 +1,72 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-  "name": "ariesclark",
-  "description": "Aries Clark's agent skills catalog.",
-  "owner": {
-    "name": "Aries Clark",
-    "url": "https://github.com/ariesclark"
-  },
-  "plugins": [
-    {
-      "name": "core",
-      "source": "./plugins/core",
-      "category": "library",
-      "description": "Shared library for the other plugins in this marketplace: hook verdict emitters and URL helpers. Nothing to install — consumers symlink the scripts."
-    },
-    {
-      "name": "elixir-phoenix",
-      "source": "./plugins/elixir-phoenix",
-      "category": "language",
-      "description": "Idiomatic Elixir & Phoenix skills: conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, testing, and Credo checks."
-    },
-    {
-      "name": "fly",
-      "source": "./plugins/fly",
-      "category": "infrastructure",
-      "description": "Operate Fly.io infrastructure: hosted Prometheus & VictoriaLogs queries, SSH into live machines, and production database access."
-    },
-    {
-      "name": "guardrails",
-      "source": "./plugins/guardrails",
-      "category": "workflow",
-      "description": "Rule-based PreToolUse hooks that block noisy Bash habits: decorative banners, status narration, and shelling out past dedicated tools."
-    },
-    {
-      "name": "github",
-      "source": "./plugins/github",
-      "category": "workflow",
-      "description": "Redirect GitHub page fetches to a local shallow clone or gh, instead of lossy page summaries."
-    },
-    {
-      "name": "prior-art",
-      "source": "./plugins/prior-art",
-      "category": "workflow",
-      "description": "Find and reuse existing prior art (libraries, established methodology, official documentation, upstream repos, reusable CI and tooling) before hand-rolling or reimplementing something already solved."
-    },
-    {
-      "name": "humanizer",
-      "source": {
-        "source": "github",
-        "repo": "blader/humanizer",
-        "ref": "main",
-        "sha": "a2ace14a88a6746f64f1f53ed8272d6788828038"
-      },
-      "strict": false,
-      "category": "writing",
-      "description": "Strip AI-writing tells from prose: inflated symbolism, em-dash overuse, rule of three, AI vocabulary, passive voice, and negative parallelisms.",
-      "author": { "name": "blader", "url": "https://github.com/blader" }
-    }
-  ]
+	"$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+	"name": "ariesclark",
+	"description": "Aries Clark's agent skills catalog.",
+	"owner": {
+		"name": "Aries Clark",
+		"url": "https://github.com/ariesclark"
+	},
+	"plugins": [
+		{
+			"name": "core",
+			"source": "./plugins/core",
+			"category": "library",
+			"description": "Shared library for the other plugins in this marketplace: hook verdict emitters and URL helpers. Nothing to install — consumers symlink the scripts."
+		},
+		{
+			"name": "elixir-phoenix",
+			"source": "./plugins/elixir-phoenix",
+			"category": "language",
+			"description": "Idiomatic Elixir & Phoenix skills: conventions, error handling, Ecto, OTP, Oban, JSON APIs, authorization, security, observability, deployment, testing, and Credo checks."
+		},
+		{
+			"name": "fly",
+			"source": "./plugins/fly",
+			"category": "infrastructure",
+			"description": "Operate Fly.io infrastructure: hosted Prometheus & VictoriaLogs queries, SSH into live machines, and production database access."
+		},
+		{
+			"name": "guardrails",
+			"source": "./plugins/guardrails",
+			"category": "workflow",
+			"description": "Rule-based PreToolUse hooks that block noisy Bash habits: decorative banners, status narration, and shelling out past dedicated tools."
+		},
+		{
+			"name": "github",
+			"source": "./plugins/github",
+			"category": "workflow",
+			"description": "Redirect GitHub page fetches to a local shallow clone or gh, instead of lossy page summaries."
+		},
+		{
+			"name": "prior-art",
+			"source": "./plugins/prior-art",
+			"category": "workflow",
+			"description": "Find and reuse existing prior art (libraries, established methodology, official documentation, upstream repos, reusable CI and tooling) before hand-rolling or reimplementing something already solved."
+		},
+		{
+			"name": "why",
+			"source": "./plugins/why",
+			"category": "workflow",
+			"description": "Explain exactly why you took an action, citing the context that drove each part of the decision, then propose an in-place fix to whatever source shaped it."
+		},
+		{
+			"name": "writing-skills",
+			"source": "./plugins/writing-skills",
+			"category": "writing",
+			"description": "The vocabulary and principles for writing and editing skills that behave predictably: invocation, the information hierarchy, leading words and completion criteria, and pruning."
+		},
+		{
+			"name": "humanizer",
+			"source": {
+				"source": "github",
+				"repo": "blader/humanizer",
+				"ref": "main",
+				"sha": "a2ace14a88a6746f64f1f53ed8272d6788828038"
+			},
+			"strict": false,
+			"category": "writing",
+			"description": "Strip AI-writing tells from prose: inflated symbolism, em-dash overuse, rule of three, AI vocabulary, passive voice, and negative parallelisms.",
+			"author": { "name": "blader", "url": "https://github.com/blader" }
+		}
+	]
 }

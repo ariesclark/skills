@@ -1,5 +1,5 @@
-id: skill-when-to-use-too-long
-language: yaml
+id: skill-when-to-use-length
+language: markdown
 severity: error
 message: >-
   Skill `when_to_use` exceeds 512 characters. Combined with `description` it can
@@ -8,7 +8,5 @@ message: >-
 files:
   - "**/SKILL.md"
 rule:
-  pattern: "when_to_use: $W"
-constraints:
-  W:
-    regex: "[\\s\\S]{513,}"
+  kind: minus_metadata
+  regex: "when_to_use:(?:[^\\n]|\\n[ \\t]){513,}"

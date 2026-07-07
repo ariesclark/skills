@@ -11,6 +11,7 @@ when_to_use: >-
 Pairs with `elixir-conventions` (especially §5 unified error struct, §7 and §8 raise vs return) and `phoenix-authorization`.
 
 ## RULES
+
 1. **`:api` pipeline does `plug :accepts, ["json"]`** and token/session auth, with no CSRF/session/flash plumbing meant for HTML.
 2. **Controllers return either a `%Plug.Conn{}` or `{:error, _}`.** Use `action_fallback` to render the error shapes.
 3. **The FallbackController matches ONLY known error shapes. No catch-all.** An action that returns anything else is a bug; let it raise so your error reporter captures it with a stacktrace.
@@ -65,6 +66,7 @@ end
 Use `with` for the happy path; don't add `else` clauses that rewrap errors (`elixir-conventions` §5). Assert (`{:ok, x} = ...`) on things the client can't act on.
 
 ## Pagination / versioning / auth
+
 - Clamp page size server-side: `limit = attrs |> get_int("limit", 25) |> min(100)`. Return `data` + `meta` (cursor or page/total).
 - Version via path (`/api/v1`) or an `Accept` header; pick one and route pipelines accordingly.
 - Bearer tokens: a `plug` reads `authorization`, verifies, assigns the current identity, and halts with `{:error, :unauthorized}` on failure. Compare tokens with `Plug.Crypto.secure_compare/2` (see `phoenix-security`).

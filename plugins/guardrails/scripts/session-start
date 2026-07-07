@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+rules="$(cd "$directory/.." && pwd)/rules"
+
+source "$directory/core/rule"
+
+notes=$(rule_notes "$rules") || exit 0
+[[ -n "$notes" ]] || exit 0
+
+context="When running bash commands:"$'\n\n'"$notes"
+echo "$context"
+
+exit 0

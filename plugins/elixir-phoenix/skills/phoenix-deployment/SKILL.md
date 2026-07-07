@@ -11,7 +11,8 @@ when_to_use: >-
 The gotchas that pass in dev and fail (or leak) in a release. Pairs with `observability` (prod logging) and `phoenix-security` (secrets).
 
 ## RULES
-1. **Runtime config goes in `config/runtime.exs`, not `config.exs`.** `config.exs`/`prod.exs` are evaluated at *compile* time and baked into the release: env vars read there are frozen at build. Read `System.get_env`/`fetch_env!` in `runtime.exs`.
+
+1. **Runtime config goes in `config/runtime.exs`, not `config.exs`.** `config.exs`/`prod.exs` are evaluated at _compile_ time and baked into the release: env vars read there are frozen at build. Read `System.get_env`/`fetch_env!` in `runtime.exs`.
 2. **`System.fetch_env!/1` for required secrets** (crash on boot if missing). Don't default them to empty strings.
 3. **Run migrations explicitly in releases.** No Mix in a release; use a release command / migration module (`MyApp.Release.migrate/0` calling `Ecto.Migrator`). Don't auto-migrate inside `start/2` without care for multi-node startup races.
 4. **Set the runtime essentials:** `SECRET_KEY_BASE`, `PHX_HOST` (URL config), `PHX_SERVER=true` (so the endpoint actually serves in a release), `DATABASE_URL`, pool size.
@@ -55,10 +56,12 @@ end
 Run migrations as a discrete deploy step **before** the new code starts taking traffic; gate destructive migrations behind expand/contract.
 
 ## Common prod-only failures
+
 - Env var read in `config.exs` → baked at build, ignored at runtime. (Move to `runtime.exs`.)
 - Endpoint not serving → forgot `PHX_SERVER=true` / `server: true`.
 - Missing `SECRET_KEY_BASE`/`PHX_HOST` → boot crash or wrong URLs in emails/redirects.
 - Auto-migrate on boot racing across multiple nodes → run as an explicit, single step.
 
 ## Before shipping
+
 `mix compile --warnings-as-errors`, `mix test`, build the release, and dry-run the migration path (`migrate` then `rollback`) against a staging DB.

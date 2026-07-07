@@ -1,8 +1,10 @@
 id: stacking
 language: bash
 severity: warning
-message: "Run these as separate parallel Bash tool calls, or chain with && if one depends on the previous."
-note: "Commands joined with ; run serially in one call; separate tool calls run in parallel."
+message: "Run these as separate parallel Bash tool calls, or chain with `&&` if one depends on the previous."
+note: |-
+  Prefer separate tool calls over `;`-chaining (`make; test`);
+  separate calls run in parallel, while a `;` chain runs serially in one call.
 rule:
   kind: program
   all:

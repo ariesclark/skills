@@ -1,8 +1,10 @@
 id: shelling-out
 language: bash
 severity: warning
-message: "Use a dedicated tool instead of `$TOOL`: Read a file, Grep contents, Glob filenames, Edit changes."
-note: "Dedicated tools are faster and scoped to the task. Keep the shell only when it genuinely needs a pipeline."
+message: "Use a dedicated tool instead of `$TOOL`: `Read` a file, `Grep` contents, `Glob` filenames, `Edit` changes."
+note: |-
+  Prefer the dedicated tool over shelling out; it is faster and scoped to the task.
+  Use the shell only for genuine pipelines.
 rule:
   kind: command
   has: { field: name, pattern: $TOOL, regex: "^(grep|sed|find|cat|head|tail)$" }

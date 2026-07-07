@@ -11,9 +11,10 @@ when_to_use: >-
 Pairs with `elixir-conventions`. Tests should be assertive: state the exact expected shape so a failure points at the problem.
 
 ## RULES
+
 1. **Use the case templates:** `DataCase` for context/DB tests, `ConnCase` for controller/API tests. They wire the Ecto SQL sandbox and helpers.
 2. **`async: true` only when the test owns its data via the sandbox** and touches no shared global state (named processes, ETS, external services). Otherwise `async: false`.
-3. **Assertive assertions over `Enum.all?`.** A `for`-comprehension of asserts (or per-element asserts) tells you *which* element failed; `assert Enum.all?(...)` just says `false`.
+3. **Assertive assertions over `Enum.all?`.** A `for`-comprehension of asserts (or per-element asserts) tells you _which_ element failed; `assert Enum.all?(...)` just says `false`.
 4. **Match the exact result,** don't assert truthiness. `assert {:ok, %User{email: "a@b.c"}} = create_user(attrs)` beats `assert create_user(attrs)`.
 5. **Test changesets via `errors_on/1`:** assert specific field errors, not just `refute changeset.valid?`.
 6. **Fixtures build valid baseline data;** override per test. Keep them small and composable.
@@ -81,8 +82,10 @@ end
 ```
 
 ## The Ecto sandbox
+
 - `DataCase`/`ConnCase` check out a sandboxed connection per test and roll it back after, so tests don't see each other's writes.
 - For code under test that runs in **another process** (Task/GenServer/Oban), grant it sandbox access (`Ecto.Adapters.SQL.Sandbox.allow/3`) or use shared mode with `async: false`.
 
 ## Before you finish
+
 Run `mix test`, `mix format --check-formatted`, and `mix compile --warnings-as-errors`. These belong in CI; run them locally before pushing.

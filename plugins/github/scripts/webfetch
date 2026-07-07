@@ -3,7 +3,7 @@
 directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 source "$directory/core/url"
-source "$directory/core/verdict"
+source "$directory/core/hook"
 
 input=$(cat)
 url=$(jq -r '.tool_input.url // empty' <<< "$input")

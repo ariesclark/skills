@@ -1,12 +1,14 @@
-id: no-redundant-echo
+id: no-print-redundant
 language: bash
 severity: error
 message: "Run `$INNER` instead."
-note: "A command substitution already writes to stdout, so echoing it is redundant."
+note: |-
+  Don't `echo` or `printf` a command's output (`echo $(date)`);
+  it already writes to stdout, so run it directly.
 rule:
   kind: command
   all:
-    - has: { field: name, regex: "^echo$" }
+    - has: { field: name, regex: "^(echo|printf)$" }
     # the substitution must be the sole argument (no label/extra args)
     - not: { has: { nthChild: 3 } }
     - has:
@@ -39,7 +41,7 @@ valid:
   - echo hello
   - ls -la
   - date
-  - printf "$(date)"
+  - 'printf "%s\n" "$(date)"'
   - echo $(date) and counting
   - echo prefix $(hostname)
   - echo $()
@@ -57,6 +59,8 @@ invalid:
   - echo `date +%s`
   - 'echo "$(ls | wc -l)"'
   - echo $(uname -a)
+  - 'printf "$(date)"'
+  - 'printf "$(hostname)"'
   - |
     cd "$repo"
     echo $(git rev-parse HEAD)

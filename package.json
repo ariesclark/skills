@@ -1,0 +1,10 @@
+{
+	"scripts": {
+		"lint": "ast-grep scan && oxfmt --check && shfmt --apply-ignore -d $(shfmt --apply-ignore -f .)",
+		"test": "bats $(find plugins -name '*.bats') && ast-grep test --skip-snapshot-tests -c plugins/guardrails/sgconfig.yml"
+	},
+	"devDependencies": {
+		"oxfmt": "^0.56.0"
+	},
+	"packageManager": "pnpm@10.27.0"
+}

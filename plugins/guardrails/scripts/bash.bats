@@ -26,6 +26,23 @@ hook() {
 	[[ "$output" == *'"permissionDecision": "deny"'* ]]
 }
 
+@test "denies a static printf" {
+	run hook '{"tool_input":{"command":"printf \"not yet installed\\n\""}}'
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+}
+
+@test "denies a printf not-found marker in a fallback" {
+	run hook '{"tool_input":{"command":"command -v wrk || printf \"missing\\n\""}}'
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+}
+
+@test "allows static output redirected to a file" {
+	run hook '{"tool_input":{"command":"printf \"key=value\\n\" > config.txt"}}'
+	[ -z "$output" ]
+	run hook '{"tool_input":{"command":"echo done > config.txt"}}'
+	[ -z "$output" ]
+}
+
 @test "allows an echo of dynamic input" {
 	run hook '{"tool_input":{"command":"echo \"$PWD\""}}'
 	[ -z "$output" ]
@@ -110,11 +127,33 @@ hook() {
 	[[ "$output" == *'"permissionDecision": "deny"'* ]]
 }
 
+@test "denies a sleep poll-loop waiting on background work" {
+	run hook '{"tool_input":{"command":"while pgrep -f oha >/dev/null; do sleep 1; done"}}'
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+	[[ "$output" == *"run_in_background"* ]]
+	[[ "$output" == *"Monitor"* ]]
+}
+
+@test "denies an until poll-loop waiting on an install" {
+	run hook '{"tool_input":{"command":"until [ -x \"$HOME/.cargo/bin/oha\" ]; do sleep 5; done"}}'
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+}
+
+@test "allows a lone sleep outside a loop" {
+	run hook '{"tool_input":{"command":"sleep 5"}}'
+	[ -z "$output" ]
+}
+
+@test "allows a loop with no sleep" {
+	run hook '{"tool_input":{"command":"for f in *.log; do process \"$f\"; done"}}'
+	[ -z "$output" ]
+}
+
 @test "disabled rules stay silent" {
-	CLAUDE_PLUGIN_OPTION_bash_no_static_echo=false run hook '{"tool_input":{"command":"echo done"}}'
+	CLAUDE_PLUGIN_OPTION_bash_no_print_static=false run hook '{"tool_input":{"command":"echo done"}}'
 	[ -z "$output" ]
 
-	CLAUDE_PLUGIN_OPTION_bash_no_decorative_separator=false run hook '{"tool_input":{"command":"printf \"===== %s =====\\n\" \"$f\""}}'
+	CLAUDE_PLUGIN_OPTION_bash_no_print_separator=false run hook '{"tool_input":{"command":"printf \"===== %s =====\\n\" \"$f\""}}'
 	[ -z "$output" ]
 
 	CLAUDE_PLUGIN_OPTION_bash_shelling_out=false run hook '{"tool_input":{"command":"grep -r foo ."}}'
@@ -125,6 +164,23 @@ hook() {
 
 	CLAUDE_PLUGIN_OPTION_bash_no_backgrounding=false run hook '{"tool_input":{"command":"sleep 10 &"}}'
 	[ -z "$output" ]
+
+	CLAUDE_PLUGIN_OPTION_bash_no_sleep_poll=false run hook '{"tool_input":{"command":"while pgrep -f oha; do sleep 1; done"}}'
+	[ -z "$output" ]
+}
+
+@test "reports every error in one verdict" {
+	run hook '{"tool_input":{"command":"echo \"---\"; echo done"}}'
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+	[[ "$output" == *"decorative separator"* ]]
+	[[ "$output" == *"entirely noise"* ]]
+}
+
+@test "reports every warning in one verdict" {
+	run hook '{"tool_input":{"command":"cat a.txt; grep b c.txt"}}'
+	[[ "$output" != *"deny"* ]]
+	[[ "$output" == *"dedicated tool"* ]]
+	[[ "$output" == *"parallel"* ]]
 }
 
 @test "silent on a clean command" {
@@ -140,4 +196,12 @@ hook() {
 @test "silent on empty input" {
 	run hook '{"tool_input":{}}'
 	[ -z "$output" ]
+}
+
+@test "session-start emits the rule notes as context" {
+	command -v yq > /dev/null || skip "yq not installed"
+	run bash "$BATS_TEST_DIRNAME/session-start"
+	[ "$status" -eq 0 ]
+	[[ "$output" == *"When running bash commands"* ]]
+	[[ "$output" == *"## no-print-static"* ]]
 }

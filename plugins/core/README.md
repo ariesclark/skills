@@ -5,10 +5,21 @@ install on its own.
 
 `scripts/` holds the sources with colocated bats tests:
 
-- `verdict` — `deny`/`warn` emit a PreToolUse hook verdict as JSON and
-  exit; an optional `verdict_prefix` is prepended to every message, and
+- `hook` — `deny`/`warn` emit a PreToolUse hook decision as JSON and exit;
   `deny` takes an optional second argument emitted as `additionalContext`
-  (seen by the model but not the user).
+  (seen by the model but not the user). Both delegate to `hook.jq`, so the
+  JSON shape lives in one place.
+- `hook.jq` — the same decision shapes for jq-based hooks (loaded with
+  `jq -L <this directory>` and `include "hook";`): `deny($reason)` /
+  `deny($reason; $context)` and `warn($context)` build the decision object.
+  A hook that builds its decision in jq can emit it straight to stdout
+  instead of shelling back out to `hook`.
+- `rule` — scans code against ast-grep rule files for PreToolUse hooks
+  (sources `hook`). `rule_inline <rule.yml...>` joins rule files into one
+  `--inline-rules` document; `rule_scan <rule.yml...>` reads code on stdin and
+  prints the matches as JSON; `rule_pick` selects the most-severe match from a
+  match array; `apply_rules <rule.yml...>` ties them together and emits the
+  verdict (`error` denies, anything else warns).
 - `mktemp` — session-scoped temporary directories named
   `<session_id>-<template>-XXXXXX` under `$TMPDIR`, reading the
   `session_id` global with `$CLAUDE_CODE_SESSION_ID` as the fallback, so
@@ -20,7 +31,7 @@ install on its own.
 - `url` — `parse_url <name> <url>` explodes a URL into `<name>_host`,
   `<name>_pathname`, `<name>_search`, and a `<name>_segments` array,
   surviving ports, userinfo, and mixed case; `host_is <host>
-  <domain...>` matches exactly or by subdomain, rejecting lookalikes;
+<domain...>` matches exactly or by subdomain, rejecting lookalikes;
   `parse_search_params <array> <string>` fills a declared associative
   array with decoded parameters from a query string, when a consumer
   actually needs them; `url_decode` reverses query-string encoding.

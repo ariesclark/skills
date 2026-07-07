@@ -1,5 +1,5 @@
 id: skill-no-trigger-labels
-language: yaml
+language: markdown
 severity: error
 message: >-
   Drop the literal "Triggers:" / "Trigger phrases" label from `when_to_use`.
@@ -9,7 +9,5 @@ message: >-
 files:
   - "**/SKILL.md"
 rule:
-  pattern: "when_to_use: $W"
-constraints:
-  W:
-    regex: '(?i)(triggers?:|trigger phrases?)'
+  kind: minus_metadata
+  regex: "when_to_use:(?:[^\\n]|\\n[ \\t])*(?i:triggers?:|trigger phrases?)"

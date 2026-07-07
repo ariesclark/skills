@@ -51,6 +51,7 @@ Fields: `_msg` (the log line), `_time` (RFC3339), `fly.app.name`, `fly.app.insta
 `log.level`.
 
 LogsQL basics:
+
 - Field filter: `fly.app.name:<app>`, `log.level:error`.
 - Phrase match in the message: bare `"connection reset"` searches `_msg`.
 - Combine (implicit AND): `fly.app.name:<app> log.level:error "timeout"`.

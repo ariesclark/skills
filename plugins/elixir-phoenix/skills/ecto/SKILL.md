@@ -11,6 +11,7 @@ when_to_use: >-
 Pairs with `elixir-conventions`. Database errors a caller can act on (validation, conflict) are values; anything that "can't happen" should crash.
 
 ## RULES
+
 1. **One changeset per operation**, not one mega-changeset. `registration_changeset`, `profile_changeset`, `admin_changeset`: each casts only its own fields. Don't toggle behavior with option flags.
 2. **`cast` the fields you accept; never `cast` everything.** The cast allowlist is your mass-assignment boundary.
 3. **Pair `unsafe_validate_unique` with a DB `unique_constraint`.** The first gives a friendly form error; the second is the source of truth that catches the concurrent insert the validation can't see.
@@ -74,9 +75,11 @@ end
 Don't write a generic catch-all `else` over every step. Match the steps whose failure the caller can handle; let genuinely unexpected failures raise.
 
 ## Migrations & performance
+
 - Reversible migrations; `create index(...)` on FKs and filter/sort columns. Consider `concurrently: true` (with `@disable_ddl_transaction true`) for large tables.
 - `Repo.all(from u in User, where: ..., preload: [:posts])` over looping `Repo.preload` per row.
 - Use `select:` to avoid loading whole rows when you need a few fields; `Repo.aggregate/3` for counts/sums.
 
 ## Before you finish
+
 Run `mix format`, `mix compile --warnings-as-errors`, and your migrations against a scratch DB (`mix ecto.migrate` / `ecto.rollback`) so reversibility is real, not assumed.

@@ -1,8 +1,7 @@
 ruleDirs:
   - .ast-grep/rules
-# SKILL.md is markdown, but we only want to lint its YAML frontmatter, so force the
-# YAML grammar onto these files so frontmatter keys are matchable. tree-sitter is
-# error-tolerant, so the markdown body after the closing `---` is ignored.
-languageGlobs:
-  yaml:
-    - "**/SKILL.md"
+# SKILL.md is linted as markdown (its native grammar), not forced to YAML. The whole
+# file is then one `document` node, so the body-length rule can measure it; forcing
+# YAML dropped the body whenever it held markdown the YAML parser choked on, silently
+# passing over-length skills. The frontmatter rules match the `minus_metadata` node
+# (the `---` block) with regex instead of YAML key patterns.

@@ -283,7 +283,7 @@ These belong in CI, but run them locally before declaring code done. Don't just 
 - `mix compile --warnings-as-errors`: warnings are bugs-in-waiting (unused vars, unreachable clauses, missing `@impl`).
 - `mix credo --strict --format=oneline`: style/consistency and common smells, if the project uses it. **Always pass `--format=oneline`.** Credo's default prints a multi-line block per issue, which bloats the context window for no benefit; one greppable line per issue is all you need to act on.
   - Iterating on one file? Scope it: `mix credo suggest --format=oneline lib/my_app/foo.ex` (`suggest` is the default, so `mix credo --format=oneline lib/my_app/foo.ex` works too), far faster than re-scanning the whole tree.
-  - Don't recognize a finding? `mix credo explain lib/my_app/foo.ex:42:7` prints the full rationale with a before/after example, the one place you *want* the detail, so skip `oneline` here. You can also explain a check by name: `mix credo explain Credo.Check.Refactor.Nesting`.
+  - Don't recognize a finding? `mix credo explain lib/my_app/foo.ex:42:7` prints the full rationale with a before/after example, the one place you _want_ the detail, so skip `oneline` here. You can also explain a check by name: `mix credo explain Credo.Check.Refactor.Nesting`.
 - `mix dialyzer`: typespec/contract violations, if set up.
 - `mix test`: add a failing test first for any bug you fix.
 

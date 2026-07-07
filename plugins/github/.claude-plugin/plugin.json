@@ -1,59 +1,59 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "github",
-  "displayName": "GitHub",
-  "version": "0.6.0",
-  "description": "Redirect GitHub page fetches (WebFetch, curl, wget) to a local shallow clone or gh, instead of lossy page summaries.",
-  "author": {
-    "name": "Aries Clark",
-    "email": "me@ariesclark.com",
-    "url": "https://github.com/ariesclark"
-  },
-  "homepage": "https://github.com/ariesclark/skills",
-  "repository": "https://github.com/ariesclark/skills",
-  "license": "MIT",
-  "dependencies": [],
-  "keywords": ["github", "gh", "webfetch", "curl", "wget", "clone", "hooks", "pre-tool-use"],
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "WebFetch",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/webfetch"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/context"
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup"
-          }
-        ]
-      }
-    ]
-  }
+	"$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+	"name": "github",
+	"displayName": "GitHub",
+	"version": "0.6.0",
+	"description": "Redirect GitHub page fetches (WebFetch, curl, wget) to a local shallow clone or gh, instead of lossy page summaries.",
+	"author": {
+		"name": "Aries Clark",
+		"email": "me@ariesclark.com",
+		"url": "https://github.com/ariesclark"
+	},
+	"homepage": "https://github.com/ariesclark/skills",
+	"repository": "https://github.com/ariesclark/skills",
+	"license": "MIT",
+	"dependencies": [],
+	"keywords": ["github", "gh", "webfetch", "curl", "wget", "clone", "hooks", "pre-tool-use"],
+	"hooks": {
+		"PreToolUse": [
+			{
+				"matcher": "WebFetch",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/webfetch"
+					}
+				]
+			},
+			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/bash"
+					}
+				]
+			}
+		],
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/context"
+					}
+				]
+			}
+		],
+		"SessionEnd": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup"
+					}
+				]
+			}
+		]
+	}
 }

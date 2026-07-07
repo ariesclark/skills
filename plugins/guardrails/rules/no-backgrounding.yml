@@ -1,8 +1,11 @@
 id: no-backgrounding
 language: bash
 severity: error
-message: "Use the Bash tool run_in_background parameter instead of `&`, or separate parallel tool calls."
-note: "& detaches the process from the harness, losing its output and exit status."
+message: "Try again with the Bash tool's `run_in_background` parameter instead of `&`, or as separate parallel tool calls."
+note: |-
+  Don't background a command with `&` (`make &`);
+  the harness loses the detached process's output and exit status.
+  Prefer separate Bash tool calls in parallel, or `run_in_background`.
 rule:
   kind: program
   has: { regex: "^&$", stopBy: end }

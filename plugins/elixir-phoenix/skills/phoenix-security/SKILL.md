@@ -11,7 +11,8 @@ when_to_use: >-
 Pairs with `phoenix-authorization` (access control) and `elixir-conventions` (assertive parsing). These are the BEAM- and web-specific footguns.
 
 ## RULES
-1. **Never `String.to_atom/1` on user input.** Atoms aren't garbage-collected, so unbounded creation crashes the VM. Use `String.to_existing_atom/1` *only* when the full set is known and pre-created; otherwise keep it a string.
+
+1. **Never `String.to_atom/1` on user input.** Atoms aren't garbage-collected, so unbounded creation crashes the VM. Use `String.to_existing_atom/1` _only_ when the full set is known and pre-created; otherwise keep it a string.
 2. **Never interpolate user input into raw SQL.** Use parameterized Ecto queries; if you must use `fragment`, pass values as `?` parameters, never string-built.
 3. **Hash passwords with a slow KDF:** Argon2 (`argon2_elixir`) or bcrypt/pbkdf2. Never SHA/MD5, never unsalted. Run the hash even on unknown users to avoid user-enumeration timing.
 4. **Compare secrets in constant time** with `Plug.Crypto.secure_compare/2` (tokens, signatures, HMACs), never `==`.
@@ -72,5 +73,6 @@ end
 ```
 
 ## Sensitive logging
+
 - `config :phoenix, :filter_parameters, ["password", "token", "secret"]`.
 - Scrub `Authorization`/`Cookie` headers before they reach logs or your error reporter's request context.

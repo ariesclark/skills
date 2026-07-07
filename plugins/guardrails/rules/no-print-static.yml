@@ -1,12 +1,21 @@
-id: no-static-echo
+id: no-print-static
 language: bash
 severity: error
-message: "Drop this echo, or echo only dynamic input like variables or command substitutions."
-note: "Echoing static text is noise — a clean exit implies success and failures print their own errors."
+message: "`$PRINT` is entirely noise. Try again without it."
+note: |-
+  Don't print fixed text; it wastes context and repeats
+  what each command's output and exit status already show.
+
+  Common gotchas (blocked):
+  - status lines: `cmd && echo done`
+  - progress logs or labels: `echo "Building..."`, `echo "Results:"`
+  - not-found markers: `cmd || printf 'missing'`
 rule:
-  kind: command
   all:
-    - has: { field: name, regex: "^echo$" }
+    - kind: command
+    - pattern: $PRINT
+    - has: { field: name, regex: "^(echo|printf)$" }
+    - not: { inside: { kind: redirected_statement } }
     - not:
         has:
           stopBy: end
@@ -25,7 +34,10 @@ valid:
   - 'echo "$USER is done"'
   - 'echo "${arr[@]}"'
   - ls -la
-  - printf hello
+  - 'printf "%s\n" "$line"'
+  - 'printf "%-20s" "$name"'
+  - "echo done > config.txt"
+  - "printf 'key=value\\n' > config.txt"
   - |
     result=$(make build)
     echo "$result"
@@ -36,6 +48,10 @@ valid:
 invalid:
   - echo hello
   - echo done
+  - printf hello
+  - "printf 'done\\n'"
+  - command -v autocannon || echo missing
+  - command -v autocannon || printf 'missing\n'
   - 'echo "=== step ==="'
   - 'echo "---"'
   - 'echo "Build finished"'

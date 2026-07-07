@@ -14,22 +14,28 @@
 	"license": "MIT",
 	"keywords": ["hooks", "pre-tool-use", "bash", "rules"],
 	"userConfig": {
-		"bash_no_static_echo": {
+		"bash_no_print_static": {
 			"type": "boolean",
-			"title": "Block static echo",
-			"description": "Deny echo of static text (banners, status words, labels); echo of dynamic input like $VAR or $(cmd) is allowed.",
+			"title": "Block static echo/printf",
+			"description": "Deny echo or printf of static text (banners, status words, labels); dynamic input like $VAR or $(cmd), and output redirected to a file, are allowed.",
 			"default": true
 		},
-		"bash_no_redundant_echo": {
+		"bash_no_print_redundant": {
 			"type": "boolean",
-			"title": "Block redundant echo",
-			"description": "Deny echoing a command's output (echo $(cmd) or echo `cmd`); run the command directly instead.",
+			"title": "Block redundant echo/printf",
+			"description": "Deny echo or printf of a command's output (echo $(cmd), printf \"$(cmd)\"); run the command directly instead.",
 			"default": true
 		},
 		"bash_no_backgrounding": {
 			"type": "boolean",
 			"title": "Block backgrounding",
 			"description": "Deny commands backgrounded with & instead of the run_in_background parameter.",
+			"default": true
+		},
+		"bash_no_sleep_poll": {
+			"type": "boolean",
+			"title": "Block sleep poll-loops",
+			"description": "Deny a while/until/for loop around sleep; start work with run_in_background and wait with Monitor instead.",
 			"default": true
 		},
 		"bash_shelling_out": {
@@ -46,6 +52,16 @@
 		}
 	},
 	"hooks": {
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/session-start"
+					}
+				]
+			}
+		],
 		"PreToolUse": [
 			{
 				"matcher": "Bash",

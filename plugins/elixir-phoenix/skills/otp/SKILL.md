@@ -11,6 +11,7 @@ when_to_use: >-
 Pairs with `elixir-conventions` (assertive code, let-it-crash). Here: how to structure processes so failures are localized and state is owned by exactly one process.
 
 ## RULES
+
 1. **A process's public API and its callbacks live in the same module.** Callers use `MyServer.do_thing(pid, arg)`, never `GenServer.call(pid, ...)` directly.
 2. **`init/1` must be fast and must not block.** Do expensive/bootstrapping work in `handle_continue/2`, not `init/1`.
 3. **`call` for "I need the result/backpressure"; `cast` for fire-and-forget.** Don't `cast` when the caller depends on the outcome.
@@ -80,6 +81,7 @@ end)
 - The table dies with its owner. Own it from a supervised process, not a transient task.
 
 ## Anti-patterns
+
 - Blocking `init/1` (delays the whole supervision tree booting).
 - A GenServer that's really just a lock around shared data → consider ETS or passing state explicitly.
 - Catching exits to "keep the server up" → you're hiding the bug and keeping corrupt state.

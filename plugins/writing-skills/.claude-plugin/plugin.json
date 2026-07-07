@@ -1,0 +1,24 @@
+{
+	"$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+	"name": "writing-skills",
+	"displayName": "Writing Skills",
+	"version": "0.1.0",
+	"description": "The vocabulary and principles for writing and editing skills that behave predictably: invocation, the information hierarchy, leading words and completion criteria, and pruning.",
+	"author": {
+		"name": "Aries Clark",
+		"email": "me@ariesclark.com",
+		"url": "https://github.com/ariesclark"
+	},
+	"homepage": "https://github.com/ariesclark/skills",
+	"repository": "https://github.com/ariesclark/skills",
+	"license": "MIT",
+	"keywords": [
+		"writing-skills",
+		"skill-authoring",
+		"progressive-disclosure",
+		"information-hierarchy",
+		"leading-words",
+		"pruning",
+		"context-engineering"
+	]
+}

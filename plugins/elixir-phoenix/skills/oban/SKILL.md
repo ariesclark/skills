@@ -11,6 +11,7 @@ when_to_use: >-
 Pairs with `elixir-conventions`. The worker's **return value is its control flow**. Getting it right is the difference between a self-healing queue and a retry-storm that pages you.
 
 ## RULES
+
 1. **Return values mean things; pick deliberately:**
    - `:ok` / `{:ok, _}` → success.
    - `{:error, reason}` → **transient** failure worth retrying (timeout, network, rate-limit, 5xx). Counts an attempt, backs off, and (with error reporting on) pages.
@@ -72,6 +73,7 @@ end
 ```
 
 ## Anti-patterns
+
 - A worker that catches every error and returns `{:error, inspect(e)}` → erases the stacktrace and retries bugs.
 - Passing whole Ecto structs in args (stale data, bloated payloads).
 - No `max_attempts` ceiling / no backoff → retry storms.

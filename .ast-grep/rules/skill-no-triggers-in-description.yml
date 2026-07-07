@@ -1,5 +1,5 @@
 id: skill-no-triggers-in-description
-language: yaml
+language: markdown
 severity: error
 message: >-
   `description` should state what the skill does, not when to use it. Move
@@ -10,7 +10,5 @@ message: >-
 files:
   - "**/SKILL.md"
 rule:
-  pattern: "description: $D"
-constraints:
-  D:
-    regex: '(?i)(triggers?:|trigger phrases?|\buse (this |the )?(skill )?(when|whenever|if)\b|\bwhen the user\b|e\.g\.\s*")'
+  kind: minus_metadata
+  regex: '(?m)^description:[^\n]*(?i:triggers?:|trigger phrases?|\buse (this |the )?(skill )?(when|whenever|if)\b|\bwhen the user\b|e\.g\.\s*")'

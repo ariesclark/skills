@@ -11,6 +11,7 @@ when_to_use: >-
 Three distinct pillars; don't conflate them: **logs** (what happened), **traces** (how a request flowed), **metrics** (aggregate rates/latencies). Pairs with `elixir-conventions`.
 
 ## RULES
+
 1. **Log structured, not interpolated.** `Logger.error("charge failed", order_id: id, reason: inspect(reason))`. Pass metadata, don't bake values into the message string (so logs stay queryable and group well).
 2. **JSON logs in production.** Use a JSON formatter (e.g. `logger_json`) so a log pipeline can index fields. **No ANSI color codes in prod:** they corrupt JSON and log parsers (colors are for dev consoles only).
 3. **Attach `:telemetry` handlers in `Application.start/2`,** once, not per-request. Handler functions must be fast and must not crash (a raising handler gets detached).
@@ -55,9 +56,11 @@ end
 Use `Telemetry.Metrics` + a reporter (Prometheus, or `Phoenix.LiveDashboard` for a live view) to turn events into metrics. Don't hand-roll counters.
 
 ## Tracing (OpenTelemetry)
+
 - Set up the OTel SDK + auto-instrumentation libs (`opentelemetry_phoenix`, `opentelemetry_ecto`, `opentelemetry_bandit`/cowboy, `opentelemetry_oban`).
 - Propagate context across HTTP and into spawned processes/jobs; without propagation a "trace" is a single orphaned span.
 - Add a logger-metadata bridge so each log line carries the active `trace_id`/`span_id`.
 
 ## Error reporting vs logs
+
 Errors and logs are different pipelines. Crashes/exceptions should reach an error reporter (Sentry et al.) **with a stacktrace**; structured logs are for expected, queryable events. If something interesting is also a bug, raise it; don't just log a string.

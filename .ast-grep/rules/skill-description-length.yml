@@ -1,5 +1,5 @@
-id: skill-description-too-long
-language: yaml
+id: skill-description-length
+language: markdown
 severity: error
 message: >-
   Skill `description` exceeds 1024 characters. The combined `description` +
@@ -9,7 +9,5 @@ message: >-
 files:
   - "**/SKILL.md"
 rule:
-  pattern: "description: $D"
-constraints:
-  D:
-    regex: ".{1025,}"
+  kind: minus_metadata
+  regex: "(?m)^description:[ ]*[^\\n]{1025,}"

@@ -1,0 +1,23 @@
+{
+	"$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+	"name": "why",
+	"displayName": "Why",
+	"version": "0.1.0",
+	"description": "Explain exactly why you took an action, citing the context that drove each part of the decision, then propose an in-place fix to whatever source shaped it.",
+	"author": {
+		"name": "Aries Clark",
+		"email": "me@ariesclark.com",
+		"url": "https://github.com/ariesclark"
+	},
+	"homepage": "https://github.com/ariesclark/skills",
+	"repository": "https://github.com/ariesclark/skills",
+	"license": "MIT",
+	"keywords": [
+		"why",
+		"introspection",
+		"decision",
+		"provenance",
+		"context",
+		"self-audit"
+	]
+}

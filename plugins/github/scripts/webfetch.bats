@@ -54,7 +54,6 @@ load test-helper
 	[[ "$output" == *'gh pr diff 9 --repo anthropics/claude-code'* ]]
 }
 
-
 @test "issues and api variants deny with a gh redirect" {
 	run hook '{"tool_input":{"url":"https://github.com/anthropics/claude-code/issues/42"}}'
 	[[ "$output" == *'gh issue view 42 --repo anthropics/claude-code --comments'* ]]

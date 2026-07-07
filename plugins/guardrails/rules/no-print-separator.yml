@@ -1,12 +1,22 @@
-id: no-decorative-separator
+id: no-print-separator
 language: bash
 severity: error
-message: "Drop this decorative separator — banners and divider lines are noise."
-note: "A run of three or more repeated separator characters is decoration, not output. Even wrapping a real value it adds nothing; let the command's own output stand."
+message: "`$SEP` is a decorative separator. Try again without it."
+note: |-
+  Don't print separators or banners; they waste context
+  and frame output that already stands on its own.
+  To split output into sections, prefer separate Bash tool calls;
+  each lands in its own block.
+
+  Common gotchas (blocked):
+  - dividers: `echo "----"`
+  - section banners: `echo "=== Results ==="`, `printf "===== %s =====\n" "$f"`
 rule:
-  kind: command
   all:
+    - kind: command
+    - pattern: $SEP
     - has: { field: name, regex: "^(echo|printf)$" }
+    - not: { inside: { kind: redirected_statement } }
     - has:
         stopBy: end
         any:
@@ -20,6 +30,7 @@ valid:
   - 'printf "%s\n" "$line"'
   - 'printf "%-20s" "$name"'
   - 'printf "Done: %d\n" "$count"'
+  - "printf '=====\\n' > report.txt"
   - ls -la
   - "git log --oneline -5"
   - 'echo "a-b-c"'

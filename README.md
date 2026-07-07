@@ -20,12 +20,15 @@ Add the marketplace once, then install the plugins you want:
 Each plugin has its own README with the full skill list and details.
 
 ### [`elixir-phoenix`](plugins/elixir-phoenix/README.md)
+
 Idiomatic Elixir & Phoenix backend skills: conventions, OTP, Ecto, JSON APIs, authorization, security, Oban, observability, deployment, and testing.
 
 ### [`fly`](plugins/fly/README.md)
+
 Fly.io infrastructure ops: Prometheus/VictoriaLogs queries, `fly ssh`, production Postgres.
 
 ### [`prior-art`](plugins/prior-art/README.md)
+
 Find and reuse existing prior art (libraries, established methodology, official docs, upstream patterns) before hand-rolling or reimplementing what's already solved.
 
 ## Local development

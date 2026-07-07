@@ -1,16 +1,26 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "prior-art",
-  "displayName": "Prior Art",
-  "version": "0.1.0",
-  "description": "Find and reuse existing prior art (libraries, established methodology, official documentation, upstream repos, reusable CI and tooling) before hand-rolling or reimplementing something already solved.",
-  "author": {
-    "name": "Aries Clark",
-    "email": "me@ariesclark.com",
-    "url": "https://github.com/ariesclark"
-  },
-  "homepage": "https://github.com/ariesclark/skills",
-  "repository": "https://github.com/ariesclark/skills",
-  "license": "MIT",
-  "keywords": ["prior-art", "dependencies", "methodology", "documentation", "reuse", "ci", "tooling", "scaffolding", "best-practices"]
+	"$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+	"name": "prior-art",
+	"displayName": "Prior Art",
+	"version": "0.1.0",
+	"description": "Find and reuse existing prior art (libraries, established methodology, official documentation, upstream repos, reusable CI and tooling) before hand-rolling or reimplementing something already solved.",
+	"author": {
+		"name": "Aries Clark",
+		"email": "me@ariesclark.com",
+		"url": "https://github.com/ariesclark"
+	},
+	"homepage": "https://github.com/ariesclark/skills",
+	"repository": "https://github.com/ariesclark/skills",
+	"license": "MIT",
+	"keywords": [
+		"prior-art",
+		"dependencies",
+		"methodology",
+		"documentation",
+		"reuse",
+		"ci",
+		"tooling",
+		"scaffolding",
+		"best-practices"
+	]
 }

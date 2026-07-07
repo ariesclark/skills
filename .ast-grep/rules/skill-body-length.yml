@@ -1,0 +1,20 @@
+id: skill-body-length
+language: markdown
+severity: error
+message: SKILL.md body exceeds 8,000 characters.
+note: |-
+  Trim the body under the limit: first cut duplication (collapse each idea to one
+  authoritative spot), then tighten prose. Only if it is still over, apply
+  progressive disclosure. Keep the core workflow in `SKILL.md` and move long
+  examples, deep-dive patterns, and reference tables into a linked file the body
+  points to and loads only when needed.
+
+  The `writing-skills` skill covers the full method (the information hierarchy,
+  progressive disclosure, and pruning) and why a lean body buys reliability, not
+  just space.
+files:
+  - "**/SKILL.md"
+rule:
+  all:
+    - kind: document
+    - regex: "\\A---[\\s\\S]*?\\n---\\n[\\s\\S]{8000,}"
