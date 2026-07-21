@@ -5,10 +5,10 @@ message: >-
   Try again without the `sleep` loop; it blocks the whole turn. Start the work
   with the Bash tool's `run_in_background`, then wait for it with the `Monitor` tool.
 note: |-
-  Don't poll with a `sleep` loop; it blocks the whole turn while you wait.
+  Never poll with a `sleep` loop; it blocks the whole turn while you wait.
   Run the work with `run_in_background` and watch it with `Monitor` tool instead.
 
-  Common gotchas (blocked):
+  Common failures (not exhaustive):
   - waiting on a process: `while pgrep -f build; do sleep 1; done`
   - waiting on a file: `until [ -f out ]; do sleep 2; done`
 rule:

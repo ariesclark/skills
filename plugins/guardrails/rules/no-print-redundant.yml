@@ -3,7 +3,7 @@ language: bash
 severity: error
 message: "Run `$INNER` instead."
 note: |-
-  Don't `echo` or `printf` a command's output (`echo $(date)`);
+  Never `echo` or `printf` a command's output (`echo $(date)`);
   it already writes to stdout, so run it directly.
 rule:
   kind: command

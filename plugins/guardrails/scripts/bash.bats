@@ -21,6 +21,17 @@ hook() {
 	[[ "$output" == *"decorative separator"* ]]
 }
 
+@test "denies a banner printed from PowerShell" {
+	run hook '{"tool_input":{"command":"powershell.exe -Command \"'\''=== step ==='\''\""}}'
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+	[[ "$output" == *"decorative separator"* ]]
+}
+
+@test "allows a PowerShell command with no banner" {
+	run hook '{"tool_input":{"command":"powershell.exe -NoProfile -Command \"Get-Process\""}}'
+	[ -z "$output" ]
+}
+
 @test "denies a static status echo" {
 	run hook '{"tool_input":{"command":"make build && echo done"}}'
 	[[ "$output" == *'"permissionDecision": "deny"'* ]]

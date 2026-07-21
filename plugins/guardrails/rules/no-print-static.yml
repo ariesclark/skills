@@ -3,10 +3,10 @@ language: bash
 severity: error
 message: "`$PRINT` is entirely noise. Try again without it."
 note: |-
-  Don't print fixed text; it wastes context and repeats
+  Never print fixed text; it wastes context and repeats
   what each command's output and exit status already show.
 
-  Common gotchas (blocked):
+  Common failures (not exhaustive):
   - status lines: `cmd && echo done`
   - progress logs or labels: `echo "Building..."`, `echo "Results:"`
   - not-found markers: `cmd || printf 'missing'`

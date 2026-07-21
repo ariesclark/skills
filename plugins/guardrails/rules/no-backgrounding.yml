@@ -3,7 +3,7 @@ language: bash
 severity: error
 message: "Try again with the Bash tool's `run_in_background` parameter instead of `&`, or as separate parallel tool calls."
 note: |-
-  Don't background a command with `&` (`make &`);
+  Never background a command with `&` (`make &`);
   the harness loses the detached process's output and exit status.
   Prefer separate Bash tool calls in parallel, or `run_in_background`.
 rule:

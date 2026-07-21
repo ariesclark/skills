@@ -3,25 +3,40 @@ language: bash
 severity: error
 message: "`$SEP` is a decorative separator. Try again without it."
 note: |-
-  Don't print separators or banners; they waste context
-  and frame output that already stands on its own.
-  To split output into sections, prefer separate Bash tool calls;
-  each lands in its own block.
+  Never print a decorative separator or banner to format output,
+  such as a line of dashes or equals or a `=== label ===` header.
+  
+  Output from each tool call already appears in its own block, so
+  to break output into sections, make a separate call per section.
+  
+  What matters is the printed line, not what emits it, so a script
+  or program that prints one is banned just the same.
 
-  Common gotchas (blocked):
-  - dividers: `echo "----"`
-  - section banners: `echo "=== Results ==="`, `printf "===== %s =====\n" "$f"`
+  Common failures (not exhaustive):
+  - `echo "----"`
+  - `printf "===== %s =====\n" "$f"`
+  - `powershell.exe -Command "'=== Results ==='"`
 rule:
-  all:
-    - kind: command
-    - pattern: $SEP
-    - has: { field: name, regex: "^(echo|printf)$" }
-    - not: { inside: { kind: redirected_statement } }
-    - has:
-        stopBy: end
-        any:
-          - { kind: string_content, regex: "[-=*]{3,}" }
-          - { kind: raw_string, regex: "[-=*]{3,}" }
+  any:
+    - all:
+        - kind: command
+        - pattern: $SEP
+        - has: { field: name, regex: "^(echo|printf)$" }
+        - not: { inside: { kind: redirected_statement } }
+        - has:
+            stopBy: end
+            any:
+              - { kind: string_content, regex: "[-=*]{3,}" }
+              - { kind: raw_string, regex: "[-=*]{3,}" }
+    - all:
+        - kind: command
+        - pattern: $SEP
+        - has: { field: name, regex: '^(powershell(\.exe)?|pwsh)$' }
+        - not: { inside: { kind: redirected_statement } }
+        - has:
+            stopBy: end
+            kind: string_content
+            regex: "['\"][-=*]{3,}"
 valid:
   - echo "$VAR"
   - echo hello
@@ -34,6 +49,9 @@ valid:
   - ls -la
   - "git log --oneline -5"
   - 'echo "a-b-c"'
+  - "powershell.exe -NoProfile -Command \"Get-Process\""
+  - "pwsh -c \"Write-Output $env:PATH\""
+  - "powershell -Command \"Get-ChildItem | Select-Object Name\""
   - |
     for f in *.log; do
       printf "%s\n" "$f"
@@ -47,6 +65,9 @@ invalid:
   - 'echo "----------"'
   - 'printf "%s\n=====\n" "$header"'
   - 'echo "--- $file ---"'
+  - "powershell.exe -Command \"'=== Results ==='\""
+  - "powershell -NoProfile -Command \"'--- step ---'; Get-Process\""
+  - "pwsh -c \"Write-Host '----------'\""
   - |
     for f in *.yml; do
       printf "===== %s =====\n" "$f"

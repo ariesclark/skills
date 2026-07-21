@@ -12,7 +12,11 @@ Run these on every plugin you touched, plus the marketplace and the skill linter
 claude plugin validate . --strict                 # marketplace manifest
 claude plugin validate ./plugins/<name> --strict  # a plugin + its skills' frontmatter
 ast-grep scan                                      # SKILL.md frontmatter lint rules
+pnpm test                                          # bats hook tests + ast-grep rule tests
 ```
+
+When you touch a hook script (`plugins/*/scripts/`) or an ast-grep rule, `pnpm test`
+is the one that catches it. Run a single file with `bats plugins/<name>/scripts/<file>.bats`.
 
 ## Editing skills
 
@@ -31,14 +35,15 @@ prompt: get it to a compliant call on the next try.
 - **Match copy to severity.** `error` denies and the agent resubmits, so write a
   retry ("Try again without it"); `warning` doesn't block, so write "prefer Y".
 - **Be assertive.** It's rejected until fixed: "Delete it", not "Usually the fix is
-  to delete it". No hedging, no em dashes.
+  to delete it". No hedging, no em dashes. State a ban as an absolute ("Never", not
+  "Don't" or "Avoid"); see the `writing` skill's "Writing for agents".
 - **Message vs note.** Message names the offender, the verdict, and the retry
   (`` `$CMD` is entirely noise. Try again without it. ``). The note teaches the rule
-  itself, in a fixed shape: a lead line of `directive + why-as-cost` ("Don't print
+  itself, in a fixed shape: a lead line of `directive + why-as-cost` ("Never print
   fixed text; it wastes context and repeats what each command's output and exit status
   already show"), then, only if the rule has several recognizable forms, a
-  `Common gotchas (blocked):` list of `category: example` entries picked for structural
-  range (bare, `&&`, `||`), not reworded duplicates. The shared domain ("When running
+  `Common failures (not exhaustive):` list of `category: example` entries picked for
+  structural range (bare, `&&`, `||`), not reworded duplicates. The shared domain ("When running
   bash commands") is stated once by whatever wraps the notes (the SessionStart primer,
   or the PreToolUse message), not repeated in every note.
 - **Keep `$NAME` out of prose.** ast-grep interpolates metavariables into the
