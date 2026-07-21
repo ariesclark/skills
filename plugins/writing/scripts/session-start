@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+cat << 'EOF'
+Use the `writing` skill immediately. This is not optional.
+EOF

@@ -50,23 +50,10 @@
 			"description": "Explain exactly why you took an action, citing the context that drove each part of the decision, then propose an in-place fix to whatever source shaped it."
 		},
 		{
-			"name": "writing-skills",
-			"source": "./plugins/writing-skills",
+			"name": "writing",
+			"source": "./plugins/writing",
 			"category": "writing",
-			"description": "The vocabulary and principles for writing and editing skills that behave predictably: invocation, the information hierarchy, leading words and completion criteria, and pruning."
-		},
-		{
-			"name": "humanizer",
-			"source": {
-				"source": "github",
-				"repo": "blader/humanizer",
-				"ref": "main",
-				"sha": "a2ace14a88a6746f64f1f53ed8272d6788828038"
-			},
-			"strict": false,
-			"category": "writing",
-			"description": "Strip AI-writing tells from prose: inflated symbolism, em-dash overuse, rule of three, AI vocabulary, passive voice, and negative parallelisms.",
-			"author": { "name": "blader", "url": "https://github.com/blader" }
+			"description": "Principles for clear prose, split by who reads it: humans read for meaning and fill gaps with judgment, agents read literally and act on the exact words."
 		}
 	]
 }
