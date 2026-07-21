@@ -8,12 +8,6 @@
 	},
 	"plugins": [
 		{
-			"name": "core",
-			"source": "./plugins/core",
-			"category": "library",
-			"description": "Shared library for the other plugins in this marketplace: hook verdict emitters and URL helpers. Nothing to install — consumers symlink the scripts."
-		},
-		{
 			"name": "elixir-phoenix",
 			"source": "./plugins/elixir-phoenix",
 			"category": "language",
