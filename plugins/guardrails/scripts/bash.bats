@@ -160,6 +160,35 @@ hook() {
 	[ -z "$output" ]
 }
 
+@test "denies rm and points at trash" {
+	run hook '{"tool_input":{"command":"rm -rf build"}}'
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+	[[ "$output" == *"trash"* ]]
+}
+
+@test "denies rm anywhere in a chain" {
+	run hook '{"tool_input":{"command":"cd src && rm old.js"}}'
+	[[ "$output" == *'"permissionDecision": "deny"'* ]]
+}
+
+@test "allows trash itself" {
+	run hook '{"tool_input":{"command":"trash build"}}'
+	[ -z "$output" ]
+}
+
+@test "allows rm as another command's argument" {
+	run hook '{"tool_input":{"command":"git rm --cached file.txt"}}'
+	[ -z "$output" ]
+
+	run hook '{"tool_input":{"command":"ssh host rm /tmp/scratch"}}'
+	[ -z "$output" ]
+}
+
+@test "allows rmdir" {
+	run hook '{"tool_input":{"command":"rmdir empty-dir"}}'
+	[ -z "$output" ]
+}
+
 @test "disabled rules stay silent" {
 	CLAUDE_PLUGIN_OPTION_bash_no_print_static=false run hook '{"tool_input":{"command":"echo done"}}'
 	[ -z "$output" ]
@@ -177,6 +206,9 @@ hook() {
 	[ -z "$output" ]
 
 	CLAUDE_PLUGIN_OPTION_bash_no_sleep_poll=false run hook '{"tool_input":{"command":"while pgrep -f oha; do sleep 1; done"}}'
+	[ -z "$output" ]
+
+	CLAUDE_PLUGIN_OPTION_bash_prefer_trash=false run hook '{"tool_input":{"command":"rm -rf build"}}'
 	[ -z "$output" ]
 }
 

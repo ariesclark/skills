@@ -4,10 +4,11 @@ Rule-based PreToolUse hooks that block noisy Bash habits before they run:
 echoing static text (`echo "==="`, `echo done`), re-echoing a command's
 output (`echo $(cmd)`, ``echo `cmd` ``), shelling out to
 `grep`/`find`/`cat`/`sed` where a dedicated tool fits, stacking independent
-commands with `;` instead of running them as parallel tool calls, and
-backgrounding with `&` instead of the `run_in_background` parameter. Echoes
-and backgrounding are denied outright; the rest surface as context the agent
-can override when the shell is genuinely needed. A plain `echo` is left alone
+commands with `;` instead of running them as parallel tool calls,
+backgrounding with `&` instead of the `run_in_background` parameter, and
+deleting with `rm` where `trash` keeps the path recoverable. Echoes,
+backgrounding, and `rm` are denied outright; the rest surface as context the
+agent can override when the shell is genuinely needed. A plain `echo` is left alone
 only when it emits dynamic input like `$VAR` (run the command directly rather
 than echoing its output).
 
@@ -24,7 +25,10 @@ builtins like `set`/`cd` so `set -euo pipefail; cmd` stays quiet. Each rule
 can be toggled at enable time. Requires `jq` and `ast-grep`.
 
 ast-grep parses with tree-sitter, which does not peel wrapper commands, so
-`sudo grep …` is not flagged (the bare `grep …` still is). `sgconfig.yml`
+`sudo grep …` is not flagged (the bare `grep …` still is). The same shape is
+deliberate for `rm`: only a bare `rm` is denied, leaving `git rm`,
+`ssh host rm …`, and `docker exec … rm …` alone, since none of those delete
+into a local trash. `sgconfig.yml`
 wires `rules/` for `ast-grep test`, which runs each rule's colocated cases.
 
 ## Install

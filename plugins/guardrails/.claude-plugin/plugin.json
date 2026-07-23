@@ -2,8 +2,8 @@
 	"$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
 	"name": "guardrails",
 	"displayName": "Guardrails",
-	"version": "0.2.0",
-	"description": "Rule-based PreToolUse hooks that block noisy Bash habits: static echoes, shelling out past dedicated tools, stacked commands, and backgrounding.",
+	"version": "0.3.0",
+	"description": "Rule-based PreToolUse hooks that block noisy or unrecoverable Bash habits: static echoes, shelling out past dedicated tools, stacked commands, backgrounding, and deleting with rm instead of trash.",
 	"author": {
 		"name": "Aries Clark",
 		"email": "me@ariesclark.com",
@@ -36,6 +36,12 @@
 			"type": "boolean",
 			"title": "Block sleep poll-loops",
 			"description": "Deny a while/until/for loop around sleep; start work with run_in_background and wait with Monitor instead.",
+			"default": true
+		},
+		"bash_prefer_trash": {
+			"type": "boolean",
+			"title": "Block rm, prefer trash",
+			"description": "Deny deleting with rm; use trash (trash-cli), which moves the path to the trash so a wrong path is recoverable. rm passed to another command, as in ssh host rm, is left alone.",
 			"default": true
 		},
 		"bash_shelling_out": {

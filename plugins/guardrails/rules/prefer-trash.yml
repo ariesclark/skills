@@ -1,0 +1,36 @@
+id: prefer-trash
+language: bash
+severity: error
+message: "Delete with `trash` instead: `trash <path>`. Restore a mistake with `trash-restore`."
+note: |-
+  Never delete with `rm`; use `trash` (trash-cli), which moves the path
+  to the trash instead of unlinking it, so a wrong path is recoverable.
+  `trash` takes the same paths and ignores `-r`/`-f`, so `rm -rf build`
+  becomes `trash build`.
+
+  Only the bare command is caught. `rm` run somewhere with no trash of
+  its own, such as `ssh host rm …` or `docker exec … rm …`, is left alone.
+rule:
+  kind: command
+  has: { field: name, regex: "^rm$" }
+valid:
+  - trash file.txt
+  - trash build
+  - trash-empty 0
+  - git rm --cached file.txt
+  - npm rm left-pad
+  - docker exec app rm -rf /tmp/cache
+  - ssh host rm /tmp/scratch
+  - ls -la
+  - echo rm
+  - rmdir empty-dir
+invalid:
+  - rm file.txt
+  - rm -rf build
+  - rm -f .env
+  - "cd src && rm old.js"
+  - "rm a; rm b"
+  - "make clean || rm -rf dist"
+  - |
+    git add -A
+    rm stale.log
