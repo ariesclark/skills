@@ -1,0 +1,132 @@
+claude_config_directory() {
+	printf '%s\n' "${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
+}
+
+claude_projects_directory() {
+	printf '%s\n' "$(claude_config_directory)/projects"
+}
+
+claude_session_id() {
+	printf '%s' "${session_id:-${CLAUDE_CODE_SESSION_ID:-}}"
+}
+
+get_transcript() {
+	local session_id=${1:-}
+	[[ -n "$session_id" ]] || return 1
+
+	local match
+	for match in "$(claude_projects_directory)"/*/"$session_id".jsonl; do
+		[[ -f "$match" ]] || continue
+		printf '%s\n' "$match"
+		return 0
+	done
+	return 1
+}
+
+get_models() {
+	local transcript
+	transcript=$(get_transcript "${1:-}") || return 1
+
+	jq -r 'select(.type == "assistant")
+		| .message.model // empty
+		| select(. != "<synthetic>")' "$transcript"
+}
+
+get_tool_calls() {
+	local transcript
+	transcript=$(get_transcript "${1:-}") || return 1
+
+	jq -sc --arg name "${2:-}" '
+		def text:
+			if type == "array" then map(select(.type == "text") | .text) | join("\n")
+			elif type == "string" then .
+			else tojson end;
+
+		(map(select(.type == "user")
+			| .message.content[]?
+			| select(.type == "tool_result"))
+			| INDEX(.tool_use_id)) as $results
+		| map(select(.type == "assistant")
+			| .message.content[]?
+			| select(.type == "tool_use")
+			| select($name == "" or .name == $name)
+			| $results[.id] as $result
+			| {
+				name,
+				input,
+				output: ($result.content // "" | text),
+				error: ($result.is_error == true)
+			})
+		| .[]
+	' "$transcript"
+}
+
+get_recent_tool_call() {
+	local calls
+	calls=$(get_tool_calls "${1:-}" "${2:-}") || return 1
+	[[ -n "$calls" ]] || return 1
+
+	tail -n 1 <<< "$calls"
+}
+
+get_recent_field() {
+	local field=${1:-}
+	[[ -n "$field" ]] || return 1
+
+	local transcript
+	transcript=$(get_transcript "${2:-}") || return 1
+
+	local values
+	values=$(jq -r --arg field "$field" '.[$field] // empty' "$transcript")
+	[[ -n "$values" ]] || return 1
+
+	tail -n 1 <<< "$values"
+}
+
+get_model_counts() {
+	local transcript
+	transcript=$(get_transcript "${1:-}") || return 1
+
+	jq -rs '
+		map(select(.type == "assistant") | .message.model // empty | select(. != "<synthetic>"))
+		| group_by(.)
+		| map({model: .[0], count: length})
+		| sort_by([(0 - .count), .model])
+		| .[] | "\(.count) \(.model)"
+	' "$transcript"
+}
+
+get_ranked_models() {
+	local counts
+	counts=$(get_model_counts "${1:-}") || return 1
+	[[ -n "$counts" ]] || return 0
+
+	awk '{print $2}' <<< "$counts"
+}
+
+get_top_model() {
+	local ranked
+	ranked=$(get_ranked_models "${1:-}") || return 1
+	[[ -n "$ranked" ]] || return 1
+
+	head -n 1 <<< "$ranked"
+}
+
+get_recent_model() {
+	local models
+	models=$(get_models "${1:-}") || return 1
+	[[ -n "$models" ]] || return 1
+
+	tail -n 1 <<< "$models"
+}
+
+get_current_transcript() { get_transcript "$(claude_session_id)"; }
+get_current_models() { get_models "$(claude_session_id)"; }
+get_current_model() { get_recent_model "$(claude_session_id)"; }
+get_current_top_model() { get_top_model "$(claude_session_id)"; }
+get_current_ranked_models() { get_ranked_models "$(claude_session_id)"; }
+get_current_model_counts() { get_model_counts "$(claude_session_id)"; }
+get_current_tool_call() { get_recent_tool_call "$(claude_session_id)" "${1:-}"; }
+get_current_skill() { get_recent_field attributionSkill "$(claude_session_id)"; }
+get_current_plugin() { get_recent_field attributionPlugin "$(claude_session_id)"; }
+get_current_version() { get_recent_field version "$(claude_session_id)"; }

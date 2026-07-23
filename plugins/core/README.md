@@ -35,6 +35,27 @@ install on its own.
   `parse_search_params <array> <string>` fills a declared associative
   array with decoded parameters from a query string, when a consumer
   actually needs them; `url_decode` reverses query-string encoding.
+- `claude` — reads Claude Code's own on-disk state. `claude_config_directory` is
+  `${CLAUDE_CONFIG_DIR:-~/.claude}`; `claude_projects_directory` is its `projects`
+  subdirectory; `claude_session_id` is the `session_id` global or
+  `$CLAUDE_CODE_SESSION_ID` (like `mktemp`). On top of those, a set of model
+  helpers report which model answered from a session's transcript. Each takes the
+  session id as its argument and reads no globals, failing quietly (non-zero, no
+  output) rather than logging: `get_transcript <session_id>` locates the transcript
+  JSONL under `claude_projects_directory`; the rest build on it, dropping
+  `<synthetic>` entries: `get_models` lists every assistant model in order;
+  `get_recent_model` is the last; `get_ranked_models` is the distinct models
+  most-used first; `get_top_model` is the busiest; `get_model_counts` prints
+  `<count> <model>` per line. A session with no real models is empty (the list
+  helpers) or fails (the single-model getters). Two more read the same transcript:
+  `get_tool_calls <session_id> [<name>]` emits one JSON object per tool call —
+  `{name, input, output, error}`, each joined to its `tool_result` — optionally
+  filtered to one tool, and `get_recent_tool_call` is the last of them;
+  `get_recent_field <field> <session_id>` is the last non-null value of a
+  top-level entry field (`version`, `attributionSkill`, `attributionPlugin`,
+  `gitBranch`, …). Each helper has a `get_current_*` wrapper (`get_current_model`,
+  `get_current_tool_call`, `get_current_skill`, `get_current_plugin`,
+  `get_current_version`, …) that passes `claude_session_id` and delegates.
 - `shell.jq` — a jq module (loaded with `jq -L <this directory>` and
   `include "shell";`) for walking `shfmt --to-json` syntax trees:
   `word_text` rebuilds an argument word from its literal parts only, so
