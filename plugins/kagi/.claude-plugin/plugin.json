@@ -1,0 +1,84 @@
+{
+	"$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+	"name": "kagi",
+	"displayName": "Kagi",
+	"version": "0.1.0",
+	"description": "Redirect web search and page fetches to the Kagi CLI, which searches signed in as you and returns structured results instead of a summary.",
+	"author": {
+		"name": "Aries Clark",
+		"email": "me@ariesclark.com",
+		"url": "https://github.com/ariesclark"
+	},
+	"homepage": "https://github.com/ariesclark/skills",
+	"repository": "https://github.com/ariesclark/skills",
+	"license": "MIT",
+	"dependencies": [],
+	"keywords": ["kagi", "search", "websearch", "webfetch", "curl", "hooks", "pre-tool-use"],
+	"userConfig": {
+		"websearch": {
+			"type": "boolean",
+			"title": "Redirect WebSearch",
+			"description": "Deny WebSearch and point at kagi search, which applies your rankings, lenses, and bangs.",
+			"default": true
+		},
+		"webfetch": {
+			"type": "boolean",
+			"title": "Redirect WebFetch",
+			"description": "Deny WebFetch and point at kagi ask-page, extract, or summarize. GitHub URLs are left to the github plugin.",
+			"default": true
+		},
+		"bash": {
+			"type": "boolean",
+			"title": "Redirect curl of search engines",
+			"description": "Deny curl or wget of a search engine result page, or of kagi.com itself, and point at the kagi CLI.",
+			"default": true
+		},
+		"context": {
+			"type": "boolean",
+			"title": "Load the command guide at session start",
+			"description": "Name the kagi command per need at session start, and point at kagi skills get kagi for the rest.",
+			"default": true
+		}
+	},
+	"hooks": {
+		"PreToolUse": [
+			{
+				"matcher": "WebSearch",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/websearch"
+					}
+				]
+			},
+			{
+				"matcher": "WebFetch",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/webfetch"
+					}
+				]
+			},
+			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/bash"
+					}
+				]
+			}
+		],
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/session-start"
+					}
+				]
+			}
+		]
+	}
+}

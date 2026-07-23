@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+scripts="$(cd "$(dirname "${BASH_SOURCE[0]}")/../scripts" && pwd)"
+
+source "$scripts/core/hook"
+source "$scripts/quote"
+
+[[ "${CLAUDE_PLUGIN_OPTION_websearch:-true}" != false ]] || exit 0
+command -v kagi > /dev/null || exit 0
+
+input=$(cat)
+query=$(jq -r '.tool_input.query // empty' <<< "$input")
+[[ -n "$query" ]] || exit 0
+
+domain=$(jq -r '.tool_input.allowed_domains // [] | if length == 1 then .[0] else empty end' <<< "$input")
+[[ -n "$domain" ]] && query+=" site:$domain"
+
+deny \
+	"Use \`kagi search $(quote "$query") --format toon --limit 5\` instead." \
+	'Kagi searches signed in as you, so your rankings, lenses, and bangs apply, and `--format toon` returns structured results rather than a summary. Run `kagi skills get kagi` for the rest of the command surface.'

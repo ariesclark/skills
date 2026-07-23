@@ -32,6 +32,12 @@
 			"description": "Redirect GitHub page fetches to a local shallow clone or gh, instead of lossy page summaries."
 		},
 		{
+			"name": "kagi",
+			"source": "./plugins/kagi",
+			"category": "workflow",
+			"description": "Route web search and page fetches through the Kagi CLI, which searches signed in as you and returns structured results instead of a summary."
+		},
+		{
 			"name": "papercuts",
 			"source": "./plugins/papercuts",
 			"category": "workflow",

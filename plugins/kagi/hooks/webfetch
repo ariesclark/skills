@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+scripts="$(cd "$(dirname "${BASH_SOURCE[0]}")/../scripts" && pwd)"
+
+source "$scripts/core/url"
+source "$scripts/core/hook"
+source "$scripts/quote"
+source "$scripts/reachable"
+
+[[ "${CLAUDE_PLUGIN_OPTION_webfetch:-true}" != false ]] || exit 0
+command -v kagi > /dev/null || exit 0
+
+input=$(cat)
+url=$(jq -r '.tool_input.url // empty' <<< "$input")
+prompt=$(jq -r '.tool_input.prompt // empty' <<< "$input")
+
+parse_url url "$url"
+[[ -n "$url_host" ]] || exit 0
+
+reachable_by_kagi "$url_host" || exit 0
+
+[[ -n "$prompt" ]] || prompt="what does this page say?"
+
+deny \
+	"Use \`kagi ask-page $(quote "$url") $(quote "$prompt")\` instead." \
+	"Kagi reads the page signed in as you and answers against the whole document, not a truncated summary. For the page itself rather than an answer: \`kagi extract $(quote "$url")\` returns the full readable markdown (needs \`KAGI_API_KEY\`), and \`kagi summarize --subscriber --url $(quote "$url")\` returns a summary. Check \`kagi auth status\` if a command reports missing credentials."

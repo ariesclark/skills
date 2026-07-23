@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# Installs the real Kagi CLI (https://github.com/microck/kagi-cli) and prints
+# its path, which the `kagi` shim beside this script execs.
+
+set -uo pipefail
+
+self_directory="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+source "$self_directory/../scripts/core/path"
+
+lock="${TMPDIR:-/tmp}/kagi_install.lock"
+
+if mkdir "$lock" 2> /dev/null; then
+	trap 'rmdir "$lock" 2> /dev/null' EXIT
+
+	printf 'kagi-shim: the Kagi CLI is not installed. Installing it now.\n' >&2
+
+	if [[ -n "${KAGI_SHIM_INSTALLER:-}" ]]; then
+		bash -c "$KAGI_SHIM_INSTALLER" >&2
+	else
+		curl -fsSL https://raw.githubusercontent.com/microck/kagi-cli/main/scripts/install.sh | sh >&2
+	fi
+else
+	printf 'kagi-shim: another install is running (%s); waiting.\n' "$lock" >&2
+	waited=0
+	while [[ -d "$lock" && "$waited" -lt 300 ]]; do
+		sleep 1
+		waited=$((waited + 1))
+	done
+fi
+
+kagi=$(command_elsewhere kagi "$self_directory") || {
+	printf 'kagi-shim: the install finished, but no kagi binary is on PATH.\n' >&2
+	printf 'kagi-shim: install it from https://github.com/microck/kagi-cli, then run this again.\n' >&2
+	exit 127
+}
+
+printf 'kagi-shim: installed at %s.\n' "$kagi" >&2
+printf '%s\n' "$kagi"

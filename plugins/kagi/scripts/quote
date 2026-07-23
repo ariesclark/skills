@@ -1,0 +1,11 @@
+# Render an argument as a double-quoted shell word, so a query carrying quotes
+# or newlines still pastes back as one argument.
+quote() {
+	local text=${1//$'\n'/ }
+	text=${text//\\/\\\\}
+	text=${text//\"/\\\"}
+	text=${text//\$/\\\$}
+	text=${text//\`/\\\`}
+
+	printf '"%s"' "$text"
+}

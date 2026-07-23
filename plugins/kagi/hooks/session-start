@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+[[ "${CLAUDE_PLUGIN_OPTION_context:-true}" != false ]] || exit 0
+
+# Ask the CLI which credentials exist. KAGI_SHIM_AUTO_INSTALL=false keeps the
+# bundled shim from installing kagi mid-session when it is not on PATH yet. If the
+# call fails (kagi absent), treat nothing as missing and fall through to the primer.
+status=$(KAGI_SHIM_AUTO_INSTALL=false kagi auth status 2> /dev/null) || status=''
+
+missing=()
+steps=()
+grep -q '^session token: not configured' <<< "$status" && {
+	missing+=('Session token')
+	steps+=('Session token: copy the Session Link from https://kagi.com/settings/user_details, then `kagi auth set --session-token "<link-or-token>"`.')
+}
+grep -q '^api key: not configured' <<< "$status" && {
+	missing+=('API key')
+	steps+=('API key: generate one at https://kagi.com/api, then `kagi auth set --api-key "<key>"`.')
+}
+
+# Signed in: hand the agent the usage primer and stop.
+if [[ ${#missing[@]} -eq 0 ]]; then
+	cat << 'EOF'
+The `kagi` CLI is this machine's web surface. It runs signed in to the user's
+Kagi account, so their rankings, lenses, and bangs apply, and every command
+returns structured output. Use it instead of WebSearch, WebFetch, or curl of a
+search engine.
+
+- Search: `kagi search "<query>" --format toon --limit 5`
+- A direct answer with citations: `kagi quick "<question>" --format markdown`
+- A page's full text: `kagi extract "<url>"`
+- Current news: `kagi news --category tech --limit 10`
+
+Return `--format toon` to your own context, `--format json` when a script parses
+it, `--format markdown` when the text lands in a document. Never use `--format
+pretty`; it is for humans at a terminal.
+
+Run `kagi skills get kagi` before reaching for any command or flag beyond the
+list above. It prints the CLI's own guide, version-matched to the installed
+binary, and it is the only current source; never guess a subcommand from memory.
+Never print a credential's value.
+EOF
+	exit 0
+fi
+
+# A credential is missing. A non-zero exit would drop stdout, so exit 0 and emit
+# JSON: a one-line systemMessage the UI shows, plus additionalContext that steers
+# the agent to walk the user through setup. Name only the missing ones.
+list="${missing[0]}"
+[[ ${#missing[@]} -eq 2 ]] && list="${missing[0]} or ${missing[1]}"
+
+guide="Kagi has no ${list} configured, so its commands will fail until the user sets it up. Walk the user through setup one credential at a time, then confirm with \`kagi auth status\`. If the user does not want Kagi, tell them to remove the plugin with \`/plugin\` instead:"
+for step in "${steps[@]}"; do
+	guide+=$'\n- '"$step"
+done
+
+jq -n --arg msg "Kagi is not logged in: ${list} not configured." --arg ctx "$guide" \
+	'{systemMessage: $msg, hookSpecificOutput: {hookEventName: "SessionStart", additionalContext: $ctx}}'

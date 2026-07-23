@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#
+# Claude Code puts this directory on PATH, so `kagi` resolves here first. This
+# hands off to the real CLI (https://github.com/microck/kagi-cli), running
+# `kagi_install` beside it when that CLI is missing.
+
+set -uo pipefail
+
+self_directory="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+source "$self_directory/../scripts/core/path"
+
+kagi=$(command_elsewhere kagi "$self_directory") || {
+	if [[ "${KAGI_SHIM_AUTO_INSTALL:-true}" == false ]]; then
+		printf 'kagi-shim: the Kagi CLI is not installed, and KAGI_SHIM_AUTO_INSTALL is false.\n' >&2
+		printf 'kagi-shim: install it from https://github.com/microck/kagi-cli, then run this again.\n' >&2
+		exit 127
+	fi
+
+	kagi=$("$self_directory/kagi_install") || exit 127
+}
+
+exec "$kagi" "$@"

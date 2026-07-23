@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+scripts="$(cd "$(dirname "${BASH_SOURCE[0]}")/../scripts" && pwd)"
+
+source "$scripts/core/url"
+source "$scripts/core/hook"
+source "$scripts/quote"
+
+[[ "${CLAUDE_PLUGIN_OPTION_bash:-true}" != false ]] || exit 0
+command -v kagi > /dev/null || exit 0
+
+input=$(cat)
+command=$(jq -r '.tool_input.command // empty' <<< "$input")
+
+[[ "$command" == *curl* || "$command" == *wget* ]] || exit 0
+command -v shfmt > /dev/null || exit 0
+
+urls=$(shfmt --to-json <<< "$command" 2> /dev/null | jq -r -L "$scripts/core" -f "$scripts/bash.jq")
+
+is_search_engine() {
+	case "${1,,}" in
+		google.* | www.google.* | *.search.yahoo.com | search.yahoo.com) return 0 ;;
+	esac
+
+	host_is "$1" bing.com duckduckgo.com search.brave.com startpage.com ecosia.org mojeek.com marginalia.nu yandex.com baidu.com
+}
+
+while IFS= read -r candidate; do
+	[[ -n "$candidate" ]] || continue
+
+	parse_url candidate "$candidate"
+	[[ -n "$candidate_host" ]] || continue
+
+	declare -A search_params
+	parse_search_params search_params "$candidate_search"
+	query=${search_params[q]:-}
+
+	if host_is "$candidate_host" kagi.com; then
+		[[ -n "$query" ]] \
+			&& deny \
+				"Use \`kagi search $(quote "$query") --format toon\` instead." \
+				'The CLI is already authenticated and returns structured results; scraping the Kagi web UI returns a rendered page.'
+
+		deny \
+			'Use the `kagi` CLI instead of reaching kagi.com over HTTP.' \
+			'It carries your credentials and covers the whole surface: `kagi search`, `quick`, `assistant`, `ask-page`, `extract`, `summarize`, `news`, `translate`. Run `kagi skills get kagi` for the mapping.'
+	fi
+
+	is_search_engine "$candidate_host" || continue
+
+	[[ -n "$query" ]] \
+		&& deny \
+			"Use \`kagi search $(quote "$query") --format toon --limit 5\` instead." \
+			'Kagi searches signed in as you and returns structured results; a scraped result page is markup shaped to defeat scraping.'
+
+	deny \
+		"Use \`kagi search \"<query>\" --format toon --limit 5\` instead." \
+		'Kagi searches signed in as you and returns structured results; a scraped result page is markup shaped to defeat scraping.'
+done <<< "$urls"
+
+exit 0
