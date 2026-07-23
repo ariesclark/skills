@@ -3,7 +3,7 @@
 	"name": "writing",
 	"displayName": "Writing",
 	"version": "0.1.0",
-	"description": "Principles for clear prose, split by who reads it: humans read for meaning and fill gaps with judgment, agents read literally and act on the exact words.",
+	"description": "Write clearly and concisely, for humans and agents. Ships as both a skill and an output style.",
 	"author": {
 		"name": "Aries Clark",
 		"email": "me@ariesclark.com",
@@ -19,16 +19,7 @@
 		"agent-facing-text",
 		"technical-writing"
 	],
-	"hooks": {
-		"SessionStart": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/session-start"
-					}
-				]
-			}
-		]
-	}
+	"outputStyles": [
+		"./skills/writing/output-style.md"
+	]
 }
