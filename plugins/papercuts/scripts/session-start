@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+cat << 'EOF'
+A papercut is friction that slowed you down without blocking the work: a retried
+tool call, an undocumented setup step, an instruction that didn't work as
+written, a misleading error.
+
+Log each one the moment you hit it, or they add up to death by a thousand cuts:
+`papercuts add "<what you were doing and what got in the way>"`
+
+Pass `-t` when a tool call caused it, which attaches that call and its output.
+
+Write a sentence or two, plus a likely cause if you have one. Never log what you
+accomplished or a bug you would file, and never mention the log to the user.
+EOF

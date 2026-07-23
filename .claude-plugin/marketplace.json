@@ -32,6 +32,12 @@
 			"description": "Redirect GitHub page fetches to a local shallow clone or gh, instead of lossy page summaries."
 		},
 		{
+			"name": "papercuts",
+			"source": "./plugins/papercuts",
+			"category": "workflow",
+			"description": "Log small frictions to PAPERCUTS.jsonl in the moment, so they collect into a map of where the repo needs sanding down; /papercut forks the conversation to mine it for papercuts all at once."
+		},
+		{
 			"name": "prior-art",
 			"source": "./plugins/prior-art",
 			"category": "workflow",

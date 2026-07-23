@@ -1,0 +1,196 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -r "$here/../scripts/core/claude" ]]; then
+	source "$here/../scripts/core/claude"
+fi
+
+file="${PAPERCUTS_FILE:-PAPERCUTS.jsonl}"
+output_limit="${PAPERCUTS_OUTPUT_LIMIT:-2000}"
+entry_filter='type == "object" and has("timestamp") and has("model") and has("message")'
+
+usage_text() {
+	cat << 'EOF'
+usage: papercuts <command> [options]
+
+add [-m <model>] [-t [<tool>]] "<what you were doing and what got in the way>"
+  -m, --model <model>   tag with this model (default: the session's current model)
+  -t, --tool [<tool>]   attach the tool call that caused it — its input, output, and
+                        whether it failed. Bare, that is the most recent call; with a
+                        name (`-t Bash`, `--tool=Bash`), the most recent call of that
+                        tool. Omit the flag and no tool is recorded.
+
+list
+
+global options (any command):
+  -f, --file <path>   JSONL file to read or write (default: PAPERCUTS.jsonl, or $PAPERCUTS_FILE)
+      --json          emit JSON — the new entry for add, all entries for list
+EOF
+}
+
+usage() {
+	usage_text >&2
+	exit 2
+}
+
+entry_json() {
+	jq -cn \
+		--arg timestamp "$1" --arg model "$2" --arg message "$3" \
+		--argjson tool "${4:-null}" --arg session "${5:-}" \
+		--arg skill "${6:-}" --arg plugin "${7:-}" --arg version "${8:-}" \
+		--argjson limit "$output_limit" \
+		'{
+			timestamp: $timestamp, model: $model, message: $message,
+			tool: (if $tool == null then null else
+				$tool | .output |= (if length > $limit then .[0:$limit] + "…" else . end)
+			end),
+			session: $session, skill: $skill, plugin: $plugin, version: $version
+		} | with_entries(select(.value != "" and .value != null))'
+}
+
+detect() {
+	local name=$1
+	declare -F "$name" > /dev/null || return 0
+	"$name" 2> /dev/null || true
+}
+
+cmd_add() {
+	local model="" tool="" want_tool=0 message json=0
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+			-m | --model)
+				[[ $# -ge 2 ]] || usage
+				model="$2"
+				shift 2
+				;;
+			--tool=*)
+				want_tool=1
+				tool="${1#*=}"
+				shift
+				;;
+			-t | --tool)
+				want_tool=1
+				# a bare -t means the most recent call, so the next argument is only a
+				# tool name when it looks like one and something (the message) follows
+				if [[ $# -ge 3 && "$2" =~ ^([A-Z][A-Za-z0-9_]*|mcp__[A-Za-z0-9_]+)$ ]]; then
+					tool="$2"
+					shift
+				fi
+				shift
+				;;
+			--json)
+				json=1
+				shift
+				;;
+			-f | --file)
+				[[ $# -ge 2 ]] || usage
+				file="$2"
+				shift 2
+				;;
+			--)
+				shift
+				break
+				;;
+			-*)
+				echo "papercuts: unknown option: $1" >&2
+				usage
+				;;
+			*)
+				break
+				;;
+		esac
+	done
+
+	message="${*:-}"
+	[[ -n "$message" ]] || usage
+
+	if [[ -z "$model" ]]; then
+		if ! { declare -F get_current_model > /dev/null && model=$(get_current_model 2> /dev/null); }; then
+			echo "papercuts: could not infer model; pass -m <model> instead" >&2
+			usage
+		fi
+	fi
+	[[ -n "$model" ]] || usage
+
+	local call=""
+	if [[ $want_tool -eq 1 ]]; then
+		if declare -F get_current_tool_call > /dev/null; then
+			call=$(get_current_tool_call "$tool" 2> /dev/null || true)
+		fi
+		[[ -n "$call" ]] || echo "papercuts: no ${tool:+$tool }tool call found in the transcript" >&2
+	fi
+
+	local session skill plugin version
+	session=$(detect claude_session_id)
+	skill=$(detect get_current_skill)
+	plugin=$(detect get_current_plugin)
+	version=$(detect get_current_version)
+
+	mkdir -p "$(dirname "$file")"
+
+	local timestamp entry
+	timestamp="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+	entry=$(entry_json "$timestamp" "$model" "$message" "${call:-null}" "$session" "$skill" "$plugin" "$version")
+	printf '%s\n' "$entry" >> "$file"
+
+	if [[ $json -eq 1 ]]; then
+		printf '%s\n' "$entry"
+	fi
+}
+
+cmd_list() {
+	local json=0
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+			--json)
+				json=1
+				shift
+				;;
+			-f | --file)
+				[[ $# -ge 2 ]] || usage
+				file="$2"
+				shift 2
+				;;
+			-*)
+				echo "papercuts: unknown option: $1" >&2
+				usage
+				;;
+			*)
+				echo "papercuts: unexpected argument: $1" >&2
+				usage
+				;;
+		esac
+	done
+
+	if [[ $json -eq 1 ]]; then
+		if [[ -e "$file" ]]; then
+			jq -sc "map(select($entry_filter))" "$file"
+		else
+			printf '[]\n'
+		fi
+	else
+		[[ -e "$file" ]] || return 0
+		jq -r "select($entry_filter)
+			| \"- [\\(.timestamp)] (\\(.model)) \\(.message)\"" "$file"
+	fi
+}
+
+[[ $# -ge 1 ]] || usage
+sub="$1"
+shift
+case "$sub" in
+	add)
+		cmd_add "$@"
+		;;
+	list)
+		cmd_list "$@"
+		;;
+	-h | --help | help)
+		usage_text
+		;;
+	*)
+		echo "papercuts: unknown command: $sub" >&2
+		usage
+		;;
+esac

@@ -1,0 +1,28 @@
+{
+	"$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+	"name": "papercuts",
+	"displayName": "Papercuts",
+	"version": "0.1.0",
+	"description": "Log the small frictions you hit while working to PAPERCUTS.jsonl, in the moment, so they collect into a map of where the repo needs sanding down. A SessionStart primer prompts the logging; /papercut forks the conversation to mine it for papercuts all at once.",
+	"author": {
+		"name": "Aries Clark",
+		"email": "me@ariesclark.com",
+		"url": "https://github.com/ariesclark"
+	},
+	"homepage": "https://github.com/ariesclark/skills",
+	"repository": "https://github.com/ariesclark/skills",
+	"license": "MIT",
+	"keywords": ["papercuts", "friction-log", "developer-experience", "session-review"],
+	"hooks": {
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/session-start"
+					}
+				]
+			}
+		]
+	}
+}
