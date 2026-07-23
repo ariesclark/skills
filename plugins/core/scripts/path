@@ -1,0 +1,20 @@
+command_elsewhere() {
+	local name=$1 caller=${BASH_SOURCE[1]:-$0}
+	[[ "$caller" == */* ]] || caller=./$caller
+	local excluded=${2:-${caller%/*}}
+	excluded=$(cd -P "$excluded" 2> /dev/null && pwd -P) || return 1
+
+	local entries=() entry
+	while IFS= read -r -d ':' entry || [[ -n "$entry" ]]; do
+		[[ -n "$entry" ]] || continue
+		if [[ "$(cd -P "$entry" 2> /dev/null && pwd -P)" == "$excluded" ]]; then
+			continue
+		fi
+		entries+=("$entry")
+	done <<< "$PATH:"
+
+	PATH=$(
+		IFS=:
+		printf '%s' "${entries[*]}"
+	) command -v "$name"
+}

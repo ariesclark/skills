@@ -28,6 +28,13 @@ install on its own.
   `session_id` is empty; `session_cleanup <prefix>` (from a SessionEnd
   hook) removes the session's directories whose template starts with the
   prefix.
+- `path` — `command_elsewhere <name> [<directory>]` is `command -v` with one
+  directory cut out of PATH, defaulting to the directory of the script that
+  called it. A shim named after the command it wraps (`kagi/bin/kagi`) uses it
+  to find the real binary instead of resolving back to itself. It compares
+  directories physically, so it drops a symlinked or relative PATH entry
+  pointing at the excluded one too, and fails like `command -v` when nothing
+  else on PATH matches.
 - `url` — `parse_url <name> <url>` explodes a URL into `<name>_host`,
   `<name>_pathname`, `<name>_search`, and a `<name>_segments` array,
   surviving ports, userinfo, and mixed case; `host_is <host>
